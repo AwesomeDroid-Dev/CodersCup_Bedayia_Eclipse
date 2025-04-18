@@ -15,9 +15,10 @@ class Player(MovableObject):
         self.on_ground = False
         self.jump_strength = 10
 
-        self.max_health = 100
         self.health = 100
-        self.health_bar = PlayerBar(self.pos.x, self.pos.y - 10, self.width, 5, self.max_health, self.health)
+        self.health_bar = PlayerBar(self.pos.x, self.pos.y - 10, self.width, 5, 100, self.health, (0, 255, 0))
+        self.stamina = 100
+        self.stamina_bar = PlayerBar(self.pos.x, self.pos.y - 25, self.width, 5, 100, self.stamina, (0, 0, 255))
         self.direction = "right"
         self.weapon = None  # Initialize weapon as None, we'll create it later
         self.attack_cooldown = 0
@@ -90,6 +91,7 @@ class Player(MovableObject):
     def draw(self, surface):
         super().draw(surface)
         self.health_bar.draw(surface)
+        self.stamina_bar.draw(surface)
         
         center = self.rect.center
         if self.direction == "right":

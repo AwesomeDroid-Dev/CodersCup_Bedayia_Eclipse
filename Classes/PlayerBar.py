@@ -1,14 +1,14 @@
 import pygame
 
 class PlayerBar(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, max_health, health, color=(0, 255, 0)):
+    def __init__(self, x, y, width, height, max_value, value, color=(0, 255, 0)):
         super().__init__()
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        self.max_health = max_health
-        self.health = max(0, min(health, max_health))
+        self.max_health = max_value
+        self.health = max(0, min(value, max_value))
         self.color = color
 
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
