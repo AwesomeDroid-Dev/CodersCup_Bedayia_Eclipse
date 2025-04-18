@@ -1,8 +1,9 @@
 import pygame
+from Classes.PlayerModifier import PlayerModifier
 
-class PlayerBar(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, max_value, value, color=(0, 255, 0)):
-        super().__init__()
+class PlayerBar(PlayerModifier):
+    def __init__(self, x, y, width, height, max_value, value, color, player):
+        super().__init__(-width, 10, width, height, player)
         self.x = x
         self.y = y
         self.width = width
@@ -10,25 +11,32 @@ class PlayerBar(pygame.sprite.Sprite):
         self.max_health = max_value
         self.health = max(0, min(value, max_value))
         self.color = color
+        self.player = player
 
-        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.rect = pygame.Rect(player.pos.x + x, player.pos.y + y, self.width, self.height)
         self.type = "PlayerBar"
 
     def draw(self, surface):
-        self.rect.x = self.x
-        self.rect.y = self.y
+        # Calculate position relative to the player
+        current_x = self.player.pos.x + self.x
+        current_y = self.player.pos.y + self.y
         
-        # draw red background
+        # Update rect position
+        self.rect.x = current_x
+        self.rect.y = current_y
+        
+        # Draw red background (empty health)
         pygame.draw.rect(surface, (255, 0, 0), self.rect)
 
-        # current health width
+        # Calculate current health width
         health_ratio = self.health / self.max_health
         current_width = int(self.width * health_ratio)
 
-        # draw green bar
+        # Draw filled portion with color
         if current_width > 0:
-            green_rect = pygame.Rect(self.x, self.y, current_width, self.height)
-            pygame.draw.rect(surface, self.color, green_rect)
+            filled_rect = pygame.Rect(current_x, current_y, current_width, self.height)
+            pygame.draw.rect(surface, self.color, filled_rect)
 
-    def update(self, health):
-        self.health = max(0, min(health, self.max_health))
+    def update(self, value):
+        # Update health/value ensuring it stays within bounds
+        self.health = max(0, min(value, self.max_health))

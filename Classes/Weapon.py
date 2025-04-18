@@ -1,9 +1,10 @@
 import pygame
-from pygame import Rect, Vector2
+from pygame import Rect
+from Classes.PlayerModifier import PlayerModifier
 
-class Weapon(pygame.sprite.Sprite):
+class Weapon(PlayerModifier):
     def __init__(self, player, width=20, height=10, color=(255, 100, 100), damage=10):
-        super().__init__()
+        super().__init__(0, 10, width, height, player)
         self.player = player  # Keep reference to the owner
         self.color = color
         self.original_color = color  # Store original color for reset after flash effect
@@ -11,13 +12,8 @@ class Weapon(pygame.sprite.Sprite):
         self.height = height
         self.damage = damage
         self.active = False
+        self.blocked = False
         
-        # Initialize position based on player's position and direction
-        if player.direction == "right":
-            self.pos = Vector2(player.pos.x + player.width, player.pos.y + player.height // 2 - height // 2)
-        else:
-            self.pos = Vector2(player.pos.x - width, player.pos.y + player.height // 2 - height // 2)
-            
         self.rect = Rect(self.pos.x, self.pos.y, self.width, self.height)
         self.timer = 0  # Weapon exists for 10 frames when active
         self.has_hit = []  # Track which objects this weapon has already hit
@@ -33,14 +29,18 @@ class Weapon(pygame.sprite.Sprite):
         return hits
 
     def update(self, others):
+        self.followPlayer(self.player)
         # Only check collisions if the weapon is active
         if self.active:
             hits = self.check_collision(others)
             for hit in hits:
                 if hit.type == "player":
-                    hit.change_health(-self.damage)
+                    if self.blocked:
+                        hit.change_health(-self.damage/100)
+                    else:
+                        hit.change_health(-self.damage)
                     # Make the weapon flash on hit
-                    self.color = (255, 255, 0)
+                    self.color = (255, 0, 0)
             
             # Count down the timer
             if self.timer > 0:
