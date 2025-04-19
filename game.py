@@ -36,13 +36,6 @@ while running:
             # Player 2 attack with E key
             if event.key == pygame.K_e:
                 player2.attack()
-            
-            if event.key == pygame.K_q:
-                player2.shield.activate()
-        
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_q:
-                player2.shield.deactivate()
     
     # Player 1 controls
     player.control('left', keysDown[pygame.K_LEFT])

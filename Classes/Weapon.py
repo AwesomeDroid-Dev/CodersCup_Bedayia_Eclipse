@@ -1,8 +1,8 @@
 import pygame
 from pygame import Rect
-from Classes.PlayerModifier import PlayerModifier
+from Classes.PlayerTool import PlayerTool
 
-class Weapon(PlayerModifier):
+class Weapon(PlayerTool):
     def __init__(self, player, width=20, height=10, color=(255, 100, 100), damage=10):
         super().__init__(0, 10, width, height, player)
         self.player = player  # Keep reference to the owner
@@ -12,7 +12,7 @@ class Weapon(PlayerModifier):
         self.height = height
         self.damage = damage
         self.active = False
-        self.blocked = False
+        self.cooldown = 0
         
         self.rect = Rect(self.pos.x, self.pos.y, self.width, self.height)
         self.timer = 0  # Weapon exists for 10 frames when active
@@ -30,15 +30,14 @@ class Weapon(PlayerModifier):
 
     def update(self, others):
         self.followPlayer(self.player)
+        if self.cooldown > 0:
+            self.cooldown -= 1
         # Only check collisions if the weapon is active
         if self.active:
             hits = self.check_collision(others)
             for hit in hits:
                 if hit.type == "player":
-                    if self.blocked:
-                        hit.change_health(-self.damage/4)
-                    else:
-                        hit.change_health(-self.damage)
+                    hit.change_health(-self.damage)
                     # Make the weapon flash on hit
                     self.color = (255, 0, 0)
             
@@ -47,15 +46,18 @@ class Weapon(PlayerModifier):
                 self.timer -= 1
             else:
                 self.active = False
-                self.blocked = False
                 self.color = self.original_color  # Reset color after deactivation
 
     def draw(self, surface):
+        self.rect = Rect(self.pos.x, self.pos.y, self.width, self.height)
         if self.active:
             pygame.draw.rect(surface, self.color, self.rect)
     
     def activate(self):
+        if self.cooldown > 0:
+            return
         self.active = True
+        self.cooldown = 30
         self.timer = 10
         self.has_hit = []  # Reset the hit list
         self.color = self.original_color  # Reset color when activating

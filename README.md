@@ -1,1 +1,9 @@
-Hello
+##Todo:
+- Jet Boots (Allow you to fly with fuel)
+- Plasma Gun (Shoots then explodes on contact)
+- Force Gloves (Uses fuel and blocks movement in favor of picking attraction center)
+- Teleportation Boots (Uses a ton of fuel, but allows you to save a location, then come back to it later in a tp)
+- Explosion Pelet Launcher (Hand Spot, takes some fuel and releases it as a pelet, which explodes on contact with anything)
+- EMP Blast Helmet (Temporarily disables all technology and paralizes oponent for 20 ticks)
+- A stick (Just a normal stick.. Damages opponent and immune to EMP)
+- Electro Magnetic Shield Tool (Activates a shield around you)

@@ -1,7 +1,7 @@
 import pygame
-from Classes.PlayerModifier import PlayerModifier
+from Classes.PlayerTool import PlayerTool
 
-class PlayerBar(PlayerModifier):
+class PlayerBar(PlayerTool):
     def __init__(self, x, y, width, height, max_value, value, color, player):
         super().__init__(-width, 10, width, height, player)
         self.x = x

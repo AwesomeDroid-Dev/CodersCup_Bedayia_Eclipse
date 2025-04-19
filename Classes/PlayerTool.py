@@ -1,7 +1,7 @@
 import pygame
 from pygame.math import Vector2
 
-class PlayerModifier(pygame.sprite.Sprite):
+class PlayerTool(pygame.sprite.Sprite):
     def __init__(self, xOffset, yOffset, width, height, player):
         super().__init__()
         self.width = width
