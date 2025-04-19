@@ -36,7 +36,7 @@ class Weapon(PlayerModifier):
             for hit in hits:
                 if hit.type == "player":
                     if self.blocked:
-                        hit.change_health(-self.damage/100)
+                        hit.change_health(-self.damage/4)
                     else:
                         hit.change_health(-self.damage)
                     # Make the weapon flash on hit
@@ -47,6 +47,7 @@ class Weapon(PlayerModifier):
                 self.timer -= 1
             else:
                 self.active = False
+                self.blocked = False
                 self.color = self.original_color  # Reset color after deactivation
 
     def draw(self, surface):

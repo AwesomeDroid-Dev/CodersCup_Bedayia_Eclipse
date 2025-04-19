@@ -8,8 +8,6 @@ class PlayerModifier(pygame.sprite.Sprite):
         self.height = height
         self.offset = Vector2(xOffset, yOffset)
         self.pos = Vector2(0, 0)
-        self.image = pygame.Surface((width, height), pygame.SRCALPHA)
-        self.image.fill((255, 0, 0, 100))  # Semi-transparent red for visualization
         self.rect = pygame.Rect(player.pos.x+self.offset.x, player.pos.y+self.offset.y, self.width, self.height)
         self.player = player
 

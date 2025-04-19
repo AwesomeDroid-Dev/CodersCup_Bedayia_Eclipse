@@ -32,8 +32,8 @@ class Player(MovableObject):
         self.type = "player"
         
         # Create the weapon once during initialization
-        self.weapon = Weapon(self, width=20, height=10, color=(255, 100, 100), damage=10)
-        self.shield = Shield(0, 0, 20, 20, (0, 0, 255), self)
+        self.weapon = Weapon(self, width=500, height=10, color=(255, 100, 100), damage=10)
+        self.shield = Shield(20, self.height, (0, 0, 255), self)
 
     def control(self, key, value):
         if key in self.keys:
@@ -67,8 +67,13 @@ class Player(MovableObject):
         # Update and draw the weapon if screen is provided
         if self.weapon is not None:
             self.weapon.update(others)
-            if screen and self.weapon.active:
+            if screen:
                 self.weapon.draw(screen)
+        
+        if self.shield is not None:
+            self.shield.update(others)
+            if screen:
+                self.shield.draw(screen)
 
         # Check if we're on ground
         self.on_ground = False
