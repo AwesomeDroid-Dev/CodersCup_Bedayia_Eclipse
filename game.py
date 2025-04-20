@@ -38,12 +38,18 @@ while running:
                 player2.attack()
             
             # Player 1 fly with . key
-            if event.key == pygame.K_PERIOD:
-                player.boots.activate()
+            if event.key == pygame.K_PERIOD and player.boots != None:
+                if player.boots.active:
+                    player.boots.deactivate()
+                else:
+                    player.boots.activate()
             
             # Player 2 fly with q key
-            if event.key == pygame.K_q:
-                player2.boots.deactivate()
+            if event.key == pygame.K_q and player2.boots != None:
+                if player2.boots.active:
+                    player2.boots.deactivate()
+                else:
+                    player2.boots.activate()
     
     # Player 1 controls
     player.control('left', keysDown[pygame.K_LEFT])

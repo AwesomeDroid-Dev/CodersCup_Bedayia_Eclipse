@@ -13,7 +13,7 @@ class Player(MovableObject):
             'up': False,
             'down': False,
             'left': False,
-            'right': False
+            'right': False,
         }
         self.on_ground = False
         self.jump_strength = 10
@@ -31,7 +31,7 @@ class Player(MovableObject):
         
         self.type = "player"
         
-        self.weapon = PlasmaGun(10, self)
+        #self.weapon = PlasmaGun(10, self)
         self.boots = Jetboots(self)
 
     def control(self, key, value):
