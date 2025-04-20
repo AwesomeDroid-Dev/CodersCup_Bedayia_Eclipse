@@ -7,3 +7,4 @@
 - EMP Blast Helmet (Temporarily disables all technology and paralizes oponent for 20 ticks)
 - A stick (Just a normal stick.. Damages opponent and immune to EMP)
 - Electro Magnetic Shield Tool (Activates a shield around you)
+- Speed Boots (Time Speeding Technology)

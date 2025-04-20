@@ -1,5 +1,6 @@
 import pygame
 from pygame.math import Vector2
+from Classes.Jetboots import Jetboots
 from Classes.PlayerBar import PlayerBar
 from Classes.MovableObject import MovableObject
 from Classes.Weapon import Weapon
@@ -22,17 +23,16 @@ class Player(MovableObject):
         self.max_health = 100
         self.health = 100
         self.health_bar = PlayerBar(0, -10, self.width, 5, self.max_health, self.health, (0, 255, 0), self)
-        #self.stamina = 100
-        #self.max_stamina = 100
-        #self.stamina_bar = PlayerBar(0, -20, self.width, 5, self.max_stamina, self.stamina, (0, 0, 255), self)
-        self.weapon = None  # Initialize weapon as None, we'll create it later
-        self.shield = None  # Initialize shield as None, we'll create it later
+        self.weapon = None
+        self.boots = None
+        spritesheet = pygame.image.load("./Resources/player_spritesheet.png").convert_alpha()
+        self.image = pygame.transform.scale(spritesheet.subsurface((21, 0, 12, 21)), (self.width, self.height))
+        self.rect = self.image.get_rect()
         
         self.type = "player"
         
-        # Create the weapon once during initialization
-        #self.weapon = Weapon(self, width=50, height=10, color=(255, 100, 100), damage=10)
         self.weapon = PlasmaGun(10, self)
+        self.boots = Jetboots(self)
 
     def control(self, key, value):
         if key in self.keys:
@@ -59,12 +59,10 @@ class Player(MovableObject):
         elif self.keys['left']:
             self.direction = "left"
             
-        if self.shield is not None:
-            self.shield.update(others)
-            if screen:
-                self.shield.draw(screen)
+        # Draw the player
+        if screen is not None:
+            self.draw(screen)
             
-        # Update and draw the weapon if screen is provided
         if self.weapon is not None:
             self.weapon.update(others)
             if screen:
@@ -78,6 +76,11 @@ class Player(MovableObject):
                 self.on_ground = True
                 break
         self.move(0, -1)
+    
+        if self.boots is not None:
+            self.boots.update()
+            if screen:
+                self.boots.draw(screen)
 
     def attack(self):
         self.weapon.activate()
@@ -95,16 +98,18 @@ class Player(MovableObject):
     #    self.stamina = max(0, min(self.stamina, self.max_stamina))
     #    self.stamina_bar.update(self.stamina)
     
-    def draw(self, surface):
-        super().draw(surface)
-        self.health_bar.draw(surface)
-        #self.stamina_bar.draw(surface)
+    def draw(self, screen):
+        self.health_bar.draw(screen)
         
         # Draw direction indicator
-        center = self.rect.center
-        if self.direction == "right":
-            end = (center[0] + 10, center[1])
-        else:
-            end = (center[0] - 10, center[1])
+        #center = self.rect.center
+        #if self.direction == "right":
+        #    end = (center[0] + 10, center[1])
+        #else:
+        #    end = (center[0] - 10, center[1])
         
-        pygame.draw.line(surface, (255, 0, 0), center, end, 2)
+        #pygame.draw.line(surface, (255, 0, 0), center, end, 2)
+        if self.direction == "right":
+            screen.blit(self.image, self.rect)
+        else:
+            screen.blit(pygame.transform.flip(self.image, True, False), self.rect)

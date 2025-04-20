@@ -12,8 +12,8 @@ running = True
 ground = Object(0, 500, 800, 100, (255, 255, 255))
 wall1 = Object(0, 0, 50, 600, (255, 255, 255))
 wall2 = Object(750, 0, 50, 600, (255, 255, 255))
-player = Player(600, 100, 50, 50, (0, 0, 255), speed=10)
-player2 = Player(100, 100, 50, 50, (0, 255, 0), speed=10)
+player = Player(600, 100, 12*3, 21*3, (0, 0, 255), speed=10)
+player2 = Player(100, 100, 12*3, 21*3, (0, 255, 0), speed=10)
 
 objects = [ground, wall1, wall2, player, player2]
 
@@ -36,6 +36,14 @@ while running:
             # Player 2 attack with E key
             if event.key == pygame.K_e:
                 player2.attack()
+            
+            # Player 1 fly with . key
+            if event.key == pygame.K_PERIOD:
+                player.boots.activate()
+            
+            # Player 2 fly with q key
+            if event.key == pygame.K_q:
+                player2.boots.deactivate()
     
     # Player 1 controls
     player.control('left', keysDown[pygame.K_LEFT])
@@ -55,9 +63,9 @@ while running:
     ground.draw(screen)
     wall1.draw(screen)
     wall2.draw(screen)
-    player.draw(screen)
-    player2.draw(screen)
-    
+    #player.draw(screen)
+    #player2.draw(screen)
+        
     pygame.display.update()
     clock.tick(60)
 

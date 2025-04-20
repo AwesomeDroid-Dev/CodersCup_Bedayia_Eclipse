@@ -5,7 +5,6 @@ from Classes.PlayerTool import PlayerTool
 class Weapon(PlayerTool):
     def __init__(self, player, width=20, height=10, color=(255, 100, 100), damage=10):
         super().__init__(0, 10, width, height, player)
-        self.player = player  # Keep reference to the owner
         self.color = color
         self.original_color = color  # Store original color for reset after flash effect
         self.width = width
