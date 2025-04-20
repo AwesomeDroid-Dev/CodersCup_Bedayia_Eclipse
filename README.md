@@ -1,4 +1,4 @@
-##Todo:
+# Todo:
 - Jet Boots (Allow you to fly with fuel)
 - Plasma Gun (Shoots then explodes on contact)
 - Force Gloves (Uses fuel and blocks movement in favor of picking attraction center)
