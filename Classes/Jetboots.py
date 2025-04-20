@@ -5,6 +5,7 @@ class Jetboots(PlayerTool):
     def __init__(self, player):
         super().__init__(-player.width+9, 13.5, 12*3, 21*3, player)
         self.initial_jump_strength = self.player.jump_strength
+        self.initial_speed = self.player.speed
         self.active = False
         
         spritesheet = pygame.image.load("./Resources/jetboots_spritesheet.png").convert_alpha()
@@ -16,11 +17,13 @@ class Jetboots(PlayerTool):
     
     def activate(self):
         self.player.jump_strength = 2
+        self.player.speed = 4
         self.active = True
     
     def deactivate(self):
         self.player.on_ground = False
         self.player.jump_strength = self.initial_jump_strength
+        self.player.speed = self.initial_speed
         self.active = False
     
     def update(self):

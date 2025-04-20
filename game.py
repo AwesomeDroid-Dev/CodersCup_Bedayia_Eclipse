@@ -30,11 +30,11 @@ while running:
     for event in events:
         if event.type == pygame.KEYDOWN:
             # Player 1 attack with SLASH key
-            if event.key == pygame.K_SLASH:
+            if event.key == pygame.K_SLASH and player.weapon != None:
                 player.attack()
             
             # Player 2 attack with E key
-            if event.key == pygame.K_e:
+            if event.key == pygame.K_e and player2.weapon != None:
                 player2.attack()
             
             # Player 1 fly with . key

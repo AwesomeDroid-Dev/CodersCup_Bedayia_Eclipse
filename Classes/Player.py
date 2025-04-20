@@ -31,7 +31,7 @@ class Player(MovableObject):
         
         self.type = "player"
         
-        #self.weapon = PlasmaGun(10, self)
+        self.weapon = PlasmaGun(10, self)
         self.boots = Jetboots(self)
 
     def control(self, key, value):
