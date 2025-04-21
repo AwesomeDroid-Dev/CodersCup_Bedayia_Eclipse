@@ -25,14 +25,18 @@ class Player(MovableObject):
         self.health_bar = PlayerBar(0, -10, self.width, 5, self.max_health, self.health, (0, 255, 0), self)
         self.weapon = None
         self.boots = None
-        spritesheet = pygame.image.load("./Resources/player_spritesheet.png").convert_alpha()
-        self.image = pygame.transform.scale(spritesheet.subsurface((21, 0, 12, 21)), (self.width, self.height))
+        spritesheet = pygame.image.load("./Resources/player_spritesheet_2.png").convert_alpha()
+        self.image = pygame.transform.scale(spritesheet.subsurface((9, 1, 12, 29)), (self.width, self.height))
+        self.holding_image = pygame.transform.scale(spritesheet.subsurface((0, 0, 12, 21)), (self.width, self.height))
+        #spritesheet = pygame.image.load("./Resources/player_spritesheet_2.jpg").convert_alpha()
+        #self.image = pygame.transform.scale(spritesheet.subsurface((195, 50, 55, 50)), (self.width, self.height))
         self.rect = self.image.get_rect()
         
         self.type = "player"
         
-        self.weapon = PlasmaGun(10, self)
-        self.boots = Jetboots(self)
+        #self.weapon = PlasmaGun(10, self)
+        #self.weapon = ForceGloves(self)
+        #self.boots = Jetboots(self)
 
     def control(self, key, value):
         if key in self.keys:
@@ -62,11 +66,6 @@ class Player(MovableObject):
         # Draw the player
         if screen is not None:
             self.draw(screen)
-            
-        if self.weapon is not None:
-            self.weapon.update(others)
-            if screen:
-                self.weapon.draw(screen)
 
         # Check if we're on ground
         self.on_ground = False
@@ -76,6 +75,11 @@ class Player(MovableObject):
                 self.on_ground = True
                 break
         self.move(0, -1)
+        
+        if self.weapon is not None:
+            self.weapon.update(others)
+            if screen:
+                self.weapon.draw(screen)
     
         if self.boots is not None:
             self.boots.update()
@@ -100,6 +104,9 @@ class Player(MovableObject):
     
     def draw(self, screen):
         self.health_bar.draw(screen)
+        image = self.image
+        if self.weapon is not None:
+            image = self.holding_image
         
         # Draw direction indicator
         #center = self.rect.center
@@ -110,6 +117,6 @@ class Player(MovableObject):
         
         #pygame.draw.line(surface, (255, 0, 0), center, end, 2)
         if self.direction == "right":
-            screen.blit(self.image, self.rect)
+            screen.blit(image, self.rect)
         else:
-            screen.blit(pygame.transform.flip(self.image, True, False), self.rect)
+            screen.blit(pygame.transform.flip(image, True, False), self.rect)

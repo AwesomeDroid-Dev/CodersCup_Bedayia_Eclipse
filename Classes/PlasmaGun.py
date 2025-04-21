@@ -5,12 +5,15 @@ from Classes.Weapon import Weapon
 
 class PlasmaGun(PlayerTool):
     def __init__(self, power, player):
-        super().__init__(10, 0, 10, 10, player)
+        super().__init__(-player.width/2+12, 0, 12*3, 21*3, player)
         self.power = power
         self.cooldown = 0
         self.bullet = None
         self.explosion = None
-        self.color = (255, 100, 100)
+        spritesheet = pygame.image.load("./Resources/plasmagun_spritesheet.png").convert_alpha()
+        self.image = pygame.transform.scale(spritesheet.subsurface((8, 0, 12, 21)), (self.width, self.height))
+        self.acive_image = pygame.transform.scale(spritesheet.subsurface((29, 0, 12, 21)), (self.width, self.height))
+        self.rect = self.image.get_rect()
         self.type = "PlasmaGun"
     
     def collision(self, others):
@@ -18,11 +21,20 @@ class PlasmaGun(PlayerTool):
             self.bullet.collision(others)
     
     def draw(self, screen):
+        image = self.image
+        
         if self.bullet is not None:
             self.bullet.draw(screen)
         if self.explosion is not None:
             self.explosion.draw(screen)
-        pygame.draw.rect(screen, self.color, self.rect)
+            
+        if self.cooldown > 0:
+            image = self.acive_image
+        
+        if self.player.direction == "right":
+            screen.blit(image, self.rect)
+        else:
+            screen.blit(pygame.transform.flip(image, True, False), self.rect)
     
     def update(self, others):
         if self.cooldown > 0:
@@ -39,7 +51,7 @@ class PlasmaGun(PlayerTool):
         if self.cooldown > 0:
             return
         self.bullet = PlasmaBullet(self.player, self)
-        self.cooldown = 30
+        self.cooldown = 100
         
     def deactivate(self):
         self.bullet = None
@@ -56,11 +68,17 @@ class PlasmaBullet(Weapon):
         self.timer = 300
         self.gun = gun
         self.direction = player.direction
-        self.pos = pygame.math.Vector2(player.rect.centerx, player.rect.centery)
-    
+        self.pos = pygame.math.Vector2(gun.rect.centerx, gun.rect.centery-12)
+        image = pygame.image.load('./Resources/plasma_bullet.png').convert_alpha()
+        self.image = pygame.transform.scale(image, (self.width, self.height))
+        self.rect = self.image.get_rect()
+        
     def kill(self):
         super().kill()
         self.gun.bullet = None
+    
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
     
     def update(self, others):
         self.rect = Rect(int(self.pos.x), int(self.pos.y), self.width, self.height)
@@ -83,14 +101,14 @@ class PlasmaBullet(Weapon):
             self.gun.explosion = PlasmaExplosion(self.player, self.pos, others)
 
 class PlasmaExplosion(Weapon):
-    def __init__(self, player, pos, others, radius=40, color=(255, 100, 100), damage=30):
+    def __init__(self, player, pos, others, radius=100, color=(255, 100, 100), damage=20):
         super().__init__(player, damage)
         self.color = color
         self.original_color = color
         self.radius = radius
         self.active = True
         self.speed = 10
-        self.timer = 300
+        self.damage = damage
         self.pos = pos
         self.others = others
         self.timer = 20
