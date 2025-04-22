@@ -16,7 +16,11 @@ def load_btn_image(image_name):
 
 # Button class to handle button creation and interaction
 class Btn:
+<<<<<<< HEAD
     def _init_(self, image, x, y, width, height, action=None, hover_image=None):
+=======
+    def __init__(self, image, x, y, width, height, action=None, hover_image=None):
+>>>>>>> 51adfe3a64bfd5de554da0758a83383cc34046d3
         self.image = pygame.transform.scale(image, (width, height))
         self.original_image = self.image
         self.hover_image = pygame.transform.scale(hover_image, (width, height)) if hover_image else None
@@ -40,7 +44,11 @@ class Btn:
 
 # Menu class to manage different game screens
 class Menu:
+<<<<<<< HEAD
     def _init_(self, screen):
+=======
+    def __init__(self, screen):
+>>>>>>> 51adfe3a64bfd5de554da0758a83383cc34046d3
         self.screen = screen
         self.state = "main"
         self.main_menu_btns = []
@@ -213,4 +221,8 @@ def main():
         menu.draw()
         pygame.time.Clock().tick(60)
 
+<<<<<<< HEAD
 main()
+=======
+main()
+>>>>>>> 51adfe3a64bfd5de554da0758a83383cc34046d3
