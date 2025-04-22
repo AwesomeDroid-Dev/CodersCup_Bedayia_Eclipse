@@ -1,5 +1,6 @@
 import pygame
-from Classes.Enemy import Enemy
+from Classes.AIPlayer import AIPlayer   
+from Classes.Boss import Boss
 from Classes.Object import Object
 from Classes.Player import Player
 
@@ -14,9 +15,10 @@ ground = Object(0, 500, 800, 100, (255, 255, 255))
 wall1 = Object(0, 0, 50, 600, (255, 255, 255))
 wall2 = Object(750, 0, 50, 600, (255, 255, 255))
 player = Player(600, 100, 12*3, 21*3, (0, 0, 255), speed=10)
-player2 = Enemy(100, 100, 12*3, 21*3, (0, 255, 0), speed=10)
+boss = Boss(100, 100, player)
+#player2 = AIPlayer(100, 100, 12*3, 21*3, (0, 255, 0), speed=10, target=player)
 
-objects = [ground, wall1, player, player2]
+objects = [ground, wall1, wall2, player,]# player2]
 
 while running:
     screen.fill((0, 0, 0))
@@ -36,13 +38,14 @@ while running:
     player.control('attack', keysDown[pygame.K_SLASH])
     player.control('boots', keysDown[pygame.K_PERIOD])
     player.update([obj for obj in objects if obj != player], screen)
+    boss.update([obj for obj in objects if obj != boss], screen)
     
     # Player 2 controls
     #player2.control('left', keysDown[pygame.K_a])
     #player2.control('right', keysDown[pygame.K_d])
     #player2.control('up', keysDown[pygame.K_w])
     #player2.control('down', keysDown[pygame.K_s])
-    player2.update([obj for obj in objects if obj != player2], screen)
+    #player2.update([obj for obj in objects if obj != player2], screen)
     
     # Draw objects
     ground.draw(screen)

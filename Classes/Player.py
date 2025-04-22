@@ -5,11 +5,20 @@ from Classes.PlayerBar import PlayerBar
 from Classes.MovableObject import MovableObject
 from Classes.Weapon import Weapon
 from Classes.PlasmaGun import PlasmaGun
+from Classes.PeletLauncher import PelletLauncher
 
 class Player(MovableObject):
     def __init__(self, x, y, width, height, color, speed):
         super().__init__(x, y, width, height, color, speed, gravity=0.5)
         self.keys = {
+            'up': False,
+            'down': False,
+            'left': False,
+            'right': False,
+            'attack': False,
+            'boots': False
+        }
+        self.prev_keys = {
             'up': False,
             'down': False,
             'left': False,
@@ -25,6 +34,9 @@ class Player(MovableObject):
         self.max_health = 100
         self.health = 100
         self.health_bar = PlayerBar(0, -10, self.width, 5, self.max_health, self.health, (0, 255, 0), self)
+        self.max_fuel = 100
+        self.fuel = 100
+        self.fuel_bar = PlayerBar(0, -5, self.width, 5, self.max_fuel, self.fuel, (255, 255, 0), self)
         self.weapon = None
         self.boots = None
         spritesheet = pygame.image.load("./Resources/player_spritesheet.png").convert_alpha()
@@ -36,9 +48,10 @@ class Player(MovableObject):
         
         self.type = "player"
         
-        self.weapon = PlasmaGun(10, self)
+        #self.weapon = PlasmaGun(10, self)
         #self.weapon = ForceGloves(self)
         #self.weapon = Weapon(self, 10, 5, (255, 0, 0), 10)
+        self.weapon = PelletLauncher(self)
         self.boots = Jetboots(self)
 
     def control(self, key, value):
@@ -49,8 +62,15 @@ class Player(MovableObject):
         if self.keys['attack'] and self.weapon is not None and self.weapon.cooldown == 0:
             self.attack()
 
-        if self.keys['boots'] and self.boots is None:
-            self.boots.activate()
+        if self.keys['boots'] and self.boots is not None:
+            if self.prev_keys['boots'] == False:
+                if self.boots.active == False:
+                    self.boots.activate()
+                else:
+                    self.boots.deactivate()
+                self.prev_keys['boots'] = self.keys['boots']
+        else:
+            self.prev_keys['boots'] = self.keys['boots']
         
         self.vel.x = (self.keys['right'] - self.keys['left']) * self.speed
         
@@ -113,6 +133,7 @@ class Player(MovableObject):
     
     def draw(self, screen):
         self.health_bar.draw(screen)
+        self.fuel_bar.draw(screen)
         image = self.image
         if self.weapon is not None:
             image = self.holding_image
@@ -129,3 +150,8 @@ class Player(MovableObject):
             screen.blit(image, self.rect)
         else:
             screen.blit(pygame.transform.flip(image, True, False), self.rect)
+    
+    def change_fuel(self, amount):
+        self.fuel += amount
+        self.fuel = max(0, min(self.fuel, self.max_fuel))
+        self.fuel_bar.update(self.fuel)

@@ -8,6 +8,7 @@ class Object(pygame.sprite.Sprite):
         self.width = width
         self.height = height
         self.color = color
+        self.dir = 90
         self.rect = Rect(self.pos.x, self.pos.y, self.width, self.height)
         
         self.type = "object"
