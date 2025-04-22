@@ -14,6 +14,8 @@ class Player(MovableObject):
             'down': False,
             'left': False,
             'right': False,
+            'attack': False,
+            'boots': False
         }
         self.on_ground = False
         self.jump_strength = 10
@@ -25,8 +27,8 @@ class Player(MovableObject):
         self.health_bar = PlayerBar(0, -10, self.width, 5, self.max_health, self.health, (0, 255, 0), self)
         self.weapon = None
         self.boots = None
-        spritesheet = pygame.image.load("./Resources/player_spritesheet_2.png").convert_alpha()
-        self.image = pygame.transform.scale(spritesheet.subsurface((9, 1, 12, 29)), (self.width, self.height))
+        spritesheet = pygame.image.load("./Resources/player_spritesheet.png").convert_alpha()
+        self.image = pygame.transform.scale(spritesheet.subsurface((21, 0, 12, 21)), (self.width, self.height))
         self.holding_image = pygame.transform.scale(spritesheet.subsurface((0, 0, 12, 21)), (self.width, self.height))
         #spritesheet = pygame.image.load("./Resources/player_spritesheet_2.jpg").convert_alpha()
         #self.image = pygame.transform.scale(spritesheet.subsurface((195, 50, 55, 50)), (self.width, self.height))
@@ -34,15 +36,22 @@ class Player(MovableObject):
         
         self.type = "player"
         
-        #self.weapon = PlasmaGun(10, self)
+        self.weapon = PlasmaGun(10, self)
         #self.weapon = ForceGloves(self)
-        #self.boots = Jetboots(self)
+        #self.weapon = Weapon(self, 10, 5, (255, 0, 0), 10)
+        self.boots = Jetboots(self)
 
     def control(self, key, value):
         if key in self.keys:
             self.keys[key] = value
 
     def update(self, others, screen=None):
+        if self.keys['attack'] and self.weapon is not None and self.weapon.cooldown == 0:
+            self.attack()
+
+        if self.keys['boots'] and self.boots is None:
+            self.boots.activate()
+        
         self.vel.x = (self.keys['right'] - self.keys['left']) * self.speed
         
         if self.keys['up'] and self.on_ground:
