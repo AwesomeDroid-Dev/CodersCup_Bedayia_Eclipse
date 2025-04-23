@@ -4,6 +4,7 @@ from Classes.AxeWarrior import AxeWarrior
 from Classes.Boss import Boss
 from Classes.Object import Object
 from Classes.Player import Player
+import loser_screen
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
@@ -59,6 +60,10 @@ while running:
     wall1.draw(screen)
     wall2.draw(screen)
         
+    if player.health <= 0:
+        loser_screen.show(screen)
+        player.draw = lambda screen: None
+    
     pygame.display.update()
     clock.tick(60)
 
