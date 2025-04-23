@@ -50,7 +50,6 @@ class PlasmaGun(PlayerTool):
     def activate(self):
         if self.cooldown > 0:
             return
-        self.player.change_fuel(-10)
         self.bullet = PlasmaBullet(self.player, self)
         self.cooldown = 100
         

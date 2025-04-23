@@ -1,5 +1,6 @@
 import pygame
 from pygame.math import Vector2
+from Classes.Axe import Axe
 from Classes.Jetboots import Jetboots
 from Classes.PlayerBar import PlayerBar
 from Classes.MovableObject import MovableObject
@@ -8,8 +9,8 @@ from Classes.PlasmaGun import PlasmaGun
 from Classes.PeletLauncher import PelletLauncher
 
 class Player(MovableObject):
-    def __init__(self, x, y, width, height, color, speed):
-        super().__init__(x, y, width, height, color, speed, gravity=0.5)
+    def __init__(self, x, y, width, height, image, speed):
+        super().__init__(x, y, width, height, (0, 0, 0), speed, gravity=0.5)
         self.keys = {
             'up': False,
             'down': False,
@@ -34,12 +35,9 @@ class Player(MovableObject):
         self.max_health = 100
         self.health = 100
         self.health_bar = PlayerBar(0, -10, self.width, 5, self.max_health, self.health, (0, 255, 0), self)
-        self.max_fuel = 100
-        self.fuel = 100
-        self.fuel_bar = PlayerBar(0, -5, self.width, 5, self.max_fuel, self.fuel, (255, 255, 0), self)
         self.weapon = None
         self.boots = None
-        spritesheet = pygame.image.load("./Resources/player_spritesheet.png").convert_alpha()
+        spritesheet = pygame.image.load(image).convert_alpha()
         self.image = pygame.transform.scale(spritesheet.subsurface((21, 0, 12, 21)), (self.width, self.height))
         self.holding_image = pygame.transform.scale(spritesheet.subsurface((0, 0, 12, 21)), (self.width, self.height))
         #spritesheet = pygame.image.load("./Resources/player_spritesheet_2.jpg").convert_alpha()
@@ -51,7 +49,8 @@ class Player(MovableObject):
         #self.weapon = PlasmaGun(10, self)
         #self.weapon = ForceGloves(self)
         #self.weapon = Weapon(self, 10, 5, (255, 0, 0), 10)
-        self.weapon = PelletLauncher(self)
+        #self.weapon = PelletLauncher(self)
+        self.weapon = Axe(10, -10, 50, 50, self)
         self.boots = Jetboots(self)
 
     def control(self, key, value):
@@ -133,7 +132,6 @@ class Player(MovableObject):
     
     def draw(self, screen):
         self.health_bar.draw(screen)
-        self.fuel_bar.draw(screen)
         image = self.image
         if self.weapon is not None:
             image = self.holding_image
@@ -150,8 +148,3 @@ class Player(MovableObject):
             screen.blit(image, self.rect)
         else:
             screen.blit(pygame.transform.flip(image, True, False), self.rect)
-    
-    def change_fuel(self, amount):
-        self.fuel += amount
-        self.fuel = max(0, min(self.fuel, self.max_fuel))
-        self.fuel_bar.update(self.fuel)

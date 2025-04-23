@@ -18,7 +18,6 @@ class Jetboots(PlayerTool):
     def activate(self):
         self.player.jump_strength = 2
         self.player.speed = 4
-        self.player.change_fuel(-10)
         self.active = True
     
     def deactivate(self):

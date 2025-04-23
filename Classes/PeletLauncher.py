@@ -68,7 +68,6 @@ class PelletLauncher(PlayerTool):
         if self.cooldown > 0 or self.pellet is not None:
             return
             
-        self.player.change_fuel(-5)  # Use less fuel than plasma gun
         self.pellet = Pellet(self.player, self)
         self.cooldown = 60  # Slightly faster cooldown than plasma gun
         
@@ -161,6 +160,7 @@ class PelletExplosion(Weapon):
         self.timer = 15  # Shorter duration than plasma explosion
         self.expansion_phase = 5  # Ticks for expansion
         self.current_size = 0.1  # Start small
+        self.owner = owner
         self.rect = Rect(int(self.pos.x), int(self.pos.y), self.radius*2, self.radius*2)
     
     def draw(self, surface):
