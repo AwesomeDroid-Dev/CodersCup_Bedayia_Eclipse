@@ -44,7 +44,7 @@ class Menu:
         self.screen = screen
         self.state = "main"
         self.main_menu_btns = []
-        self.story_menu_btns = []
+        self.level_menu_btns = []
         self.options_menu_btns = []
         self.credits_menu_btns = []
         self.current_menu_btns = []
@@ -53,78 +53,98 @@ class Menu:
         self.bg = pygame.image.load("assets/menu_background.png").convert_alpha()
         self.bg = pygame.transform.scale(self.bg, (screen_width, screen_height))
 
-        # Load main menu buttons
-        start_img = load_btn_image("assets/start_btn.png")
-        start_hover = load_btn_image("assets/start_btn_hover.png")
-        options_img = load_btn_image("assets/options_btn.png")
-        options_hover = load_btn_image("assets/options_btn_hover.png")
-        exit_img = load_btn_image("assets/exit_btn.png")
-        exit_hover = load_btn_image("assets/exit_btn_hover.png")
-        credits_img = load_btn_image("assets/credits_btn.png")  # no hover
-        # Credits intentionally has no hover image
+        # Button dimensions
+        button_width = 300
+        button_height = 80
 
-        self.start_btn = Btn(start_img, 400, 200, 300, 100, self.open_story_menu, start_hover)
-        self.options_btn = Btn(options_img, 400, 300, 300, 100, self.open_options_menu, options_hover)
-        self.credits_btn = Btn(credits_img, 400, 400, 300, 100, self.open_credits_menu)
-        self.exit_btn = Btn(exit_img, 400, 500, 300, 100, self.quit_game, exit_hover)
+        # Level button dimensions - make them less wide but keep the same height
+        level_button_width = 200
+        level_button_height = 80
 
-        self.main_menu_btns = [self.start_btn, self.options_btn, self.credits_btn, self.exit_btn]
+        # Offset all menus a little down
+        vertical_offset = 60
 
-        # Load story menu buttons
-        story_mode_img = load_btn_image("assets/story_mode_btn.png")
-        story_mode_hover = load_btn_image("assets/story_mode_btn_hover.png")
-        single_player_img = load_btn_image("assets/single_player_btn.png")
-        single_player_hover = load_btn_image("assets/single_player_btn_hover.png")
-        multiplayer_img = load_btn_image("assets/multiplayer_btn.png")
-        multiplayer_hover = load_btn_image("assets/multiplayer_btn_hover.png")
+        # Load images for all buttons
+        def load_pair(base):
+            return load_btn_image(f"assets/{base}_btn.png"), load_btn_image(f"assets/{base}_btn_hover.png")
 
-        self.story_mode_btn = Btn(story_mode_img, 400, 200, 300, 100, self.start_story_mode, story_mode_hover)
-        self.single_player_btn = Btn(single_player_img, 400, 300, 300, 100, self.start_single_player, single_player_hover)
-        self.multiplayer_btn = Btn(multiplayer_img, 400, 400, 300, 100, self.start_multiplayer, multiplayer_hover)
+        # Common function to space and center buttons vertically
+        def create_buttons(images, actions, spacing=20, width=button_width, height=button_height):
+            total_height = len(images) * height + (len(images) - 1) * spacing
+            start_y = (screen_height - total_height) // 2 + vertical_offset
+            buttons = []
+            for i in range(len(images)):
+                img, hover = images[i]
+                action = actions[i]
+                y = start_y + i * (height + spacing)
+                buttons.append(Btn(img, screen_width // 2, y, width, height, action, hover))
+            return buttons
 
-        self.story_menu_btns = [self.story_mode_btn, self.single_player_btn, self.multiplayer_btn]
+        start_img = load_pair("start")
+        options_img = load_pair("options")
+        credits_img = load_pair("credits")
+        exit_img = load_pair("exit")
 
-        # Load options menu buttons
+        # Level buttons
+        level1_img = load_pair("level1")
+        level2_img = load_pair("level2")
+        level3_img = load_pair("level3")
+        level4_img = load_pair("level4")
+
         sound_on_img = load_btn_image("assets/sound_on_btn.png")
         sound_off_img = load_btn_image("assets/sound_off_btn.png")
         music_on_img = load_btn_image("assets/music_on_btn.png")
         music_off_img = load_btn_image("assets/music_off_btn.png")
 
-        self.sound_on_btn = Btn(sound_on_img, 400, 200, 300, 100, self.toggle_sound)
-        self.sound_off_btn = Btn(sound_off_img, 400, 200, 300, 100, self.toggle_sound)
-        self.music_on_btn = Btn(music_on_img, 400, 300, 300, 100, self.toggle_music)
-        self.music_off_btn = Btn(music_off_img, 400, 300, 300, 100, self.toggle_music)
+        back_img, back_hover = load_pair("back")
+        self.back_btn = Btn(back_img, 100, 50, 100, 40, self.return_to_main_menu, back_hover)
+
+        # Main menu buttons (slightly less spacing)
+        self.main_menu_btns = create_buttons(
+            [start_img, options_img, credits_img, exit_img],
+            [self.open_level_menu, self.open_options_menu, self.open_credits_menu, self.quit_game],
+            spacing=15
+        )
+
+        # Level menu buttons - with narrower, less wide buttons
+        self.level_menu_btns = create_buttons(
+            [level1_img, level2_img, level3_img, level4_img],
+            [self.start_level1, self.start_level2, self.start_level3, self.start_level4],
+            spacing=15,
+            width=level_button_width,
+            height=level_button_height
+        )
+
+        # Options menu buttons with resized sound/music buttons
+        small_btn_size = 64  # size for circular buttons like sound/music
+        self.sound_on_btn = Btn(sound_on_img, screen_width // 2, 200 + vertical_offset, small_btn_size, small_btn_size, self.toggle_sound)
+        self.sound_off_btn = Btn(sound_off_img, screen_width // 2, 200 + vertical_offset, small_btn_size, small_btn_size, self.toggle_sound)
+        self.music_on_btn = Btn(music_on_img, screen_width // 2, 300 + vertical_offset, small_btn_size, small_btn_size, self.toggle_music)
+        self.music_off_btn = Btn(music_off_img, screen_width // 2, 300 + vertical_offset, small_btn_size, small_btn_size, self.toggle_music)
 
         self.sound_on = True
         self.music_on = True
 
-        # Load back button
-        back_img = load_btn_image("assets/back_btn.png")
-        back_hover = load_btn_image("assets/back_btn_hover.png")
-        self.back_btn = Btn(back_img, 50, 50, 100, 40, self.return_to_main_menu, back_hover)
-
-        # Credits scroll setup
         self.credits_scroll_y = screen_height
-
         self.current_menu_btns = self.main_menu_btns
 
-    def open_story_menu(self):
-        self.state = "story"
-        self.current_menu_btns = self.story_menu_btns + [self.back_btn]
+    def open_level_menu(self):
+        self.state = "level"
+        self.current_menu_btns = self.level_menu_btns + [self.back_btn]
 
     def open_options_menu(self):
         self.state = "options"
         if self.sound_on:
-            self.current_menu_btns = [self.sound_on_btn, self.music_on_btn, self.back_btn]
+            sound_btn = self.sound_on_btn
         else:
-            self.current_menu_btns = [self.sound_off_btn, self.music_on_btn, self.back_btn]
-        if not self.music_on:
-            self.current_menu_btns[1] = self.music_off_btn
+            sound_btn = self.sound_off_btn
+        music_btn = self.music_on_btn if self.music_on else self.music_off_btn
+        self.current_menu_btns = [sound_btn, music_btn, self.back_btn]
 
     def open_credits_menu(self):
         self.state = "credits"
-        self.current_menu_btns = []  # No buttons except back
-        self.credits_scroll_y = screen_height  # Reset scroll
+        self.current_menu_btns = []
+        self.credits_scroll_y = screen_height
 
     def toggle_sound(self):
         self.sound_on = not self.sound_on
@@ -140,14 +160,17 @@ class Menu:
         pygame.quit()
         sys.exit()
 
-    def start_story_mode(self):
-        print("Starting Story Mode...")
+    def start_level1(self):
+        print("Starting Level 1...")
 
-    def start_single_player(self):
-        print("Starting Single Player Mode...")
+    def start_level2(self):
+        print("Starting Level 2...")
 
-    def start_multiplayer(self):
-        print("Starting Multiplayer Mode...")
+    def start_level3(self):
+        print("Starting Level 3...")
+
+    def start_level4(self):
+        print("Starting Level 4...")
 
     def return_to_main_menu(self):
         self.state = "main"
@@ -181,7 +204,7 @@ class Menu:
             for btn in self.current_menu_btns:
                 btn.draw(self.screen)
 
-        if self.state in ["story", "options", "credits"]:
+        if self.state in ["level", "options", "credits"]:
             self.back_btn.draw(self.screen)
 
         pygame.display.flip()
@@ -194,13 +217,13 @@ class Menu:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     mouse_pos = pygame.mouse.get_pos()
-                    for btn in self.current_menu_btns + ([self.back_btn] if self.state in ["story", "options", "credits"] else []):
+                    for btn in self.current_menu_btns + ([self.back_btn] if self.state in ["level", "options", "credits"] else []):
                         if btn.check_click(mouse_pos):
                             btn.is_pressed = True
                             btn.click()
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
-                    for btn in self.current_menu_btns + [self.back_btn]:
+                    for btn in self.current_menu_btns + ([self.back_btn] if self.state in ["level", "options", "credits"] else []):
                         btn.is_pressed = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE and self.state == "credits":
