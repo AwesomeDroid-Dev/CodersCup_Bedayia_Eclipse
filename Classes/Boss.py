@@ -1,62 +1,50 @@
 import pygame
-from pygame.math import Vector2
+import math
 from Classes.MovableObject import MovableObject
-from Classes.PeletLauncher import PelletExplosion  # Add PelletExplosion import
+
 
 class Boss(MovableObject):
-    def __init__(self, x, y, enemy):
-        super().__init__(x, y, 50, 50, (255, 0, 0), 0, 0)
-        self.enemy = enemy
-        self.pelets = []
-        self.explosions = []  # New list to track explosions
+    def __init__(self, x, y, player):
+        super().__init__(x, y, 10, 10, (0, 0, 0), 0, 0)
+        self.player = player
+    
         self.type = "boss"
-        self.damage_source = self  # For damage attribution
 
-    def update(self, others, screen):
-        super().update(others)
-        self.timer = getattr(self, 'timer', 0) + 1
-        
-        # Pellet spawning
-        if self.timer >= 20:
-            self.shoot()
-            self.timer = 0
-            
-        # Update pellets and handle explosions
-        new_pellets = []
-        for pellet in self.pelets:
-            pellet.update(others)
-            pellet.draw(screen)
-            
-            if pellet.active:
-                new_pellets.append(pellet)
-            else:
-                # Create explosion when pellet becomes inactive
-                self.explosions.append(
-                    PelletExplosion(self.damage_source, pellet.pos.copy(), others, damage=15)
-                )
-        self.pelets = new_pellets
-        
-        # Update explosions
-        self.explosions = [exp for exp in self.explosions if exp.active]
-        for explosion in self.explosions:
-            explosion.update()
-            explosion.draw(screen)
+        self.rect = pygame.Rect(x, y, self.width, self.height)
+    
+    def update(self, *args, **kwargs):
+        self.rotateAround(0.05)
+        self.draw(pygame.display.get_surface())
+        return super().update(*args, **kwargs)
 
-    def shoot(self):
-        direction_vector = (self.enemy.pos - self.pos).normalize()
-        pellet_speed = 8
-        direction_vector *= pellet_speed
-        # Pass the Boss as the owner instead of player
-        new_pellet = Pellet(self.damage_source, self, dir=direction_vector)
-        self.pelets.append(new_pellet)
+    def draw(self, surface):
+        pygame.draw.rect(surface, (255, 0, 0), self.rect)
+    
+    def rotateAround(self, angle, center=(150, 150)):
+        # Calculate the offset from the center
+        offset_x = self.rect.centerx - center[0]
+        offset_y = self.rect.centery - center[1]
 
-class Pellet(MovableObject):
-    def __init__(self, owner, launcher, width=15, height=15, color=(200, 150, 100), damage=8, dir=None):
-        super().__init__(launcher.rect.centerx, launcher.rect.centery-12, width, height, color, speed=8, gravity=0.3)
-        self.owner = owner  # Changed from 'player' to generic 'owner'
-        self.damage = damage
-        self.launcher = launcher
-        self.active = True
-        self.lifetime = 20
-        if dir is not None:
-            self.vel = dir
+        # Calculate the new position based on rotation
+        new_x = center[0] + offset_x * math.cos(angle) - offset_y * math.sin(angle)
+        new_y = center[1] + offset_x * math.sin(angle) + offset_y * math.cos(angle)
+
+        # Update the position
+        self.rect.center = (new_x, new_y)
+
+    
+
+class BossGun(MovableObject):
+    def __init__(self, x, y, player):
+        super().__init__(x, y, 100, 100, (0, 0, 0), 0, 0)
+        self.player = player
+    
+    def draw(self, surface):
+        pygame.draw.rect(surface, (255, 0, 0), self.rect)
+    
+    def update(self, others):
+        self.followPlayer(self.player)
+        pass
+    
+    def followPlayer(self, player):
+        self.pos = player.pos
