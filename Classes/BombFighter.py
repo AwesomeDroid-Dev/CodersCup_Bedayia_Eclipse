@@ -1,9 +1,9 @@
 from Classes.Player import Player
 from pygame.math import Vector2
 
-class AIPlayer(Player):
+class BombFighter(Player):
     def __init__(self, x, y, width, height, player):
-        super().__init__(x, y, width, height, "./Resources/bombfighter.jpg", speed=9)
+        super().__init__(x, y, width, height, "./Resources/bombfighter.png", speed=9)
         self.boots = None
         self.player = player
         self.max_reaction = 15
