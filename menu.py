@@ -57,29 +57,35 @@ class Menu:
         button_width = 300
         button_height = 80
 
+        # Level button dimensions - make them less wide but keep the same height
+        level_button_width = 200
+        level_button_height = 80
+
         # Offset all menus a little down
         vertical_offset = 60
-
-        # Common function to space and center buttons vertically
-        def create_buttons(images, actions, spacing=20):
-            total_height = len(images) * button_height + (len(images) - 1) * spacing
-            start_y = (screen_height - total_height) // 2 + vertical_offset
-            buttons = []
-            for i, ((img, hover), action) in enumerate(zip(images, actions)):
-                y = start_y + i * (button_height + spacing)
-                buttons.append(Btn(img, screen_width // 2, y, button_width, button_height, action, hover))
-            return buttons
 
         # Load images for all buttons
         def load_pair(base):
             return load_btn_image(f"assets/{base}_btn.png"), load_btn_image(f"assets/{base}_btn_hover.png")
+
+        # Common function to space and center buttons vertically
+        def create_buttons(images, actions, spacing=20, width=button_width, height=button_height):
+            total_height = len(images) * height + (len(images) - 1) * spacing
+            start_y = (screen_height - total_height) // 2 + vertical_offset
+            buttons = []
+            for i in range(len(images)):
+                img, hover = images[i]
+                action = actions[i]
+                y = start_y + i * (height + spacing)
+                buttons.append(Btn(img, screen_width // 2, y, width, height, action, hover))
+            return buttons
 
         start_img = load_pair("start")
         options_img = load_pair("options")
         credits_img = load_pair("credits")
         exit_img = load_pair("exit")
 
-        # Changed from story_mode, single_player, multiplayer to level buttons
+        # Level buttons
         level1_img = load_pair("level1")
         level2_img = load_pair("level2")
         level3_img = load_pair("level3")
@@ -100,10 +106,13 @@ class Menu:
             spacing=15
         )
 
-        # Level menu buttons (renamed from story_menu_btns)
+        # Level menu buttons - with narrower, less wide buttons
         self.level_menu_btns = create_buttons(
             [level1_img, level2_img, level3_img, level4_img],
-            [self.start_level1, self.start_level2, self.start_level3, self.start_level4]
+            [self.start_level1, self.start_level2, self.start_level3, self.start_level4],
+            spacing=15,
+            width=level_button_width,
+            height=level_button_height
         )
 
         # Options menu buttons with resized sound/music buttons
@@ -151,7 +160,6 @@ class Menu:
         pygame.quit()
         sys.exit()
 
-    # Changed methods for level starts
     def start_level1(self):
         print("Starting Level 1...")
 
@@ -215,7 +223,7 @@ class Menu:
                             btn.click()
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
-                    for btn in self.current_menu_btns + [self.back_btn]:
+                    for btn in self.current_menu_btns + ([self.back_btn] if self.state in ["level", "options", "credits"] else []):
                         btn.is_pressed = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE and self.state == "credits":
