@@ -96,7 +96,7 @@ class GameOverScreen:
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return "quit"
+                pygame.quit()
             
             if self.restart_button.handle_event(event):
                 return "restart"

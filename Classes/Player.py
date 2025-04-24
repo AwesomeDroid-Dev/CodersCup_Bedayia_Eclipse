@@ -38,8 +38,10 @@ class Player(MovableObject):
         self.weapon = None
         self.boots = None
         spritesheet = pygame.image.load(image).convert_alpha()
-        self.image = pygame.transform.scale(spritesheet.subsurface((21, 0, 12, 21)), (self.width, self.height))
-        self.holding_image = pygame.transform.scale(spritesheet.subsurface((0, 0, 12, 21)), (self.width, self.height))
+        #self.image = pygame.transform.scale(spritesheet.subsurface((21, 0, 12, 21)), (self.width, self.height))
+        #self.holding_image = pygame.transform.scale(spritesheet.subsurface((0, 0, 12, 21)), (self.width, self.height))
+        self.image = pygame.transform.scale(pygame.image.load("./Resources/player_standing.png").convert_alpha(), (self.width, self.height))
+        self.holding_image = pygame.transform.scale(pygame.image.load("./Resources/player_holding.png").convert_alpha(), (self.width, self.height))
         #spritesheet = pygame.image.load("./Resources/player_spritesheet_2.jpg").convert_alpha()
         #self.image = pygame.transform.scale(spritesheet.subsurface((195, 50, 55, 50)), (self.width, self.height))
         self.rect = self.image.get_rect()

@@ -4,6 +4,7 @@ from Classes.Axe import Axe
 from Classes.AxeWarrior import AxeWarrior
 from Classes.BombFighter import BombFighter
 from Classes.Boss import Boss
+from Classes.JetbootsBoss import JetbootsBoss
 from Classes.Object import Object
 from Classes.PeletLauncher import PelletLauncher
 from Classes.Player import Player
@@ -12,33 +13,69 @@ import loser_screen
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
+global current_round
+current_round = 1
+
 def init_game():
-    return init_wave_3()
+    
+    if current_round == 1:
+        return init_wave_1()
+    elif current_round == 2:
+        return init_wave_2()
+    elif current_round == 3:
+        return init_wave_3()
 
 def init_wave_1():
-    ground = Object(0, 550, 1200, 50, (255, 255, 255))
-    wall1 = Object(0, 0, 50, 600, (255, 255, 255))
-    wall2 = Object(1150, 0, 50, 600, (255, 255, 255))
-    player = Player(600, 100, 12*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
-    player.weapon = Axe(10, -10, 50, 50, player)
+    font = pygame.font.Font(None, 36)
+    text = font.render("Wave 1", 1, (255, 255, 255))
+    textpos = text.get_rect(centerx=SCREEN_WIDTH / 2, centery=SCREEN_HEIGHT / 2)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen.fill((0, 0, 0))
+    screen.blit(text, textpos)
+    pygame.display.flip()
+    pygame.time.wait(1000)
+    
+    ground = Object(0, 550, 1200, 50, (255, 255, 255), invisible=True)
+    wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
+    wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
+    player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
+    player.weapon = Axe(-10, -10, 50, 50, player)
     player2 = AxeWarrior(100, 100, 12*3, 21*3, player)
     return [ground, wall1, wall2, player, player2]
 
 def init_wave_2():
-    ground = Object(0, 550, 1200, 50, (255, 255, 255))
-    wall1 = Object(0, 0, 50, 600, (255, 255, 255))
-    wall2 = Object(1150, 0, 50, 600, (255, 255, 255))
-    player = Player(600, 100, 12*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
+    font = pygame.font.Font(None, 36)
+    text = font.render("Wave 2", 1, (255, 255, 255))
+    textpos = text.get_rect(centerx=SCREEN_WIDTH / 2, centery=SCREEN_HEIGHT / 2)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen.fill((0, 0, 0))
+    screen.blit(text, textpos)
+    pygame.display.flip()
+    pygame.time.wait(1000)
+    
+    ground = Object(0, 550, 1200, 50, (255, 255, 255), invisible=True)
+    wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
+    wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
+    player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
     player2 = BombFighter(100, 100, 12*3, 21*3, player)
     player2.weapon = PelletLauncher(player2)
     return [ground, wall1, wall2, player, player2]
 
 def init_wave_3():
-    ground = Object(0, 550, 1200, 50, (255, 255, 255))
-    wall1 = Object(0, 0, 50, 600, (255, 255, 255))
-    wall2 = Object(1150, 0, 50, 600, (255, 255, 255))
-    player = Player(600, 100, 12*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
-    player2 = Boss(100, 100, player)
+    font = pygame.font.Font(None, 36)
+    text = font.render("BOSS BATTLE", 1, (255, 255, 255))
+    textpos = text.get_rect(centerx=SCREEN_WIDTH / 2, centery=SCREEN_HEIGHT / 2)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen.fill((0, 0, 0))
+    screen.blit(text, textpos)
+    pygame.display.flip()
+    pygame.time.wait(1000)
+    
+    ground = Object(0, 550, 1200, 50, (255, 255, 255), invisible=True)
+    wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
+    wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
+    player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
+    player2 = JetbootsBoss(100, 100, player)
     return [ground, wall1, wall2, player, player2]
 
 def main():
@@ -57,6 +94,9 @@ def main():
     
     while running:
         screen.fill((0, 0, 0))
+        bg = pygame.image.load("Resources/bg_round_1.png").convert_alpha()
+        bg = pygame.transform.scale(bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        screen.blit(bg, (0, 0))
         
         events = pygame.event.get()
         keysDown = pygame.key.get_pressed()
@@ -86,6 +126,8 @@ def main():
                 game_over = True
             if player2.health <= 0:
                 next_round = True
+                global current_round
+                current_round += 1
                 global timer
                 timer = pygame.time.get_ticks()
                 
@@ -112,11 +154,10 @@ def main():
                 game_over = False
             elif action == "quit":
                 running = False
+
         
         pygame.display.update()
         clock.tick(60)
-
-    pygame.quit()
 
 if __name__ == "__main__":
     main()

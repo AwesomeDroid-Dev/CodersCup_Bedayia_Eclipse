@@ -149,7 +149,7 @@ class Pellet(MovableObject):
 
 
 class PelletExplosion(Weapon):
-    def __init__(self, owner, pos, others, radius=60, color=(200, 150, 50), damage=15):
+    def __init__(self, owner, pos, others, radius=120, color=(200, 150, 50), damage=20):
         super().__init__(owner, width=radius*2, height=radius*2, color=color, damage=damage)
         self.radius = radius
         self.active = True

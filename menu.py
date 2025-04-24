@@ -1,16 +1,22 @@
 import pygame
 import sys
 
+import level_1
+
 # Initialize pygame
 pygame.init()
 
 # Set screen size and create a window
-screen_width = 800
+screen_width = 1200
 screen_height = 600
+global screen
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Game Menu")
+    
+global running
+running = True
 
-# Load button images
+    # Load button images
 def load_btn_image(image_name):
     return pygame.image.load(image_name).convert_alpha()
 
@@ -161,7 +167,9 @@ class Menu:
         sys.exit()
 
     def start_level1(self):
-        print("Starting Level 1...")
+        running = False
+        level_1.init_game()
+        level_1.main()
 
     def start_level2(self):
         print("Starting Level 2...")
@@ -230,8 +238,20 @@ class Menu:
                     self.return_to_main_menu()
 
 def main():
+    # Initialize pygame
+    pygame.init()
+
+    # Set screen size and create a window
+    screen_width = 1200
+    screen_height = 600
+    global screen
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption("Game Menu")
+        
+    global running
+    running = True
     menu = Menu(screen)
-    while True:
+    while running:
         menu.handle_events()
         menu.draw()
         pygame.time.Clock().tick(60)

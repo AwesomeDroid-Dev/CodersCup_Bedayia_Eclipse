@@ -5,7 +5,7 @@ from Classes.MovableObject import MovableObject
 from Classes.PlayerTool import PlayerTool
 from Classes.Weapon import Weapon
 
-class Boss(MovableObject):
+class JetbootsBoss(MovableObject):
     def __init__(self, x, y, player):
         super().__init__(x, y, 60, 80, (0, 0, 0), 0, 0.3)  # 12*3, 21*3
         self.player = player

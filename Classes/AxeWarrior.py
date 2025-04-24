@@ -1,3 +1,4 @@
+import pygame
 from Classes.Player import Player
 
 class AxeWarrior(Player):
@@ -7,6 +8,9 @@ class AxeWarrior(Player):
         self.player = player
         self.max_reaction = 15
         self.reaction = 15
+        self.image = pygame.transform.scale(pygame.image.load("./Resources/axewarrior.png").convert_alpha(), (width, height))
+        self.holding_image = pygame.transform.scale(pygame.image.load("./Resources/axewarrior.png").convert_alpha(), (width, height))
+        self.rect = self.image.get_rect(center=self.pos)
 
         self.type = "AIPlayer"
     
