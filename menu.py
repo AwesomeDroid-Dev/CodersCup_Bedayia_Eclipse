@@ -2,10 +2,12 @@ import pygame
 import sys
 import os
 
-import level_1
+import level_2
 
 # Initialize pygame
 pygame.init()
+
+import level_1
 
 # Initialize mixer if not already done
 if not pygame.mixer.get_init():
@@ -215,7 +217,8 @@ class Menu:
     def start_level2(self):
         if click_sound:
             click_sound.play()
-        print("Starting Level 2...")
+        level_2.init_game()
+        level_2.main()
 
     def start_level3(self):
         if click_sound:

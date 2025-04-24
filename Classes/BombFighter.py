@@ -3,8 +3,8 @@ from Classes.Player import Player
 from pygame.math import Vector2
 
 class BombFighter(Player):
-    def __init__(self, x, y, width, height, player):
-        super().__init__(x, y, width, height, "./Resources/bombfighter.png", speed=9)
+    def __init__(self, x, y, width, height, player, speed=9):
+        super().__init__(x, y, width, height, "./Resources/bombfighter.png", speed)
         self.boots = None
         self.player = player
         self.max_reaction = 15
@@ -16,7 +16,7 @@ class BombFighter(Player):
         self.holding_image = spritesheet.subsurface(pygame.Rect(86, 56, 25, 35))
         self.rect = self.image.get_rect(center=self.pos)
 
-        self.type = "AIPlayer"
+        self.type = "player"
     
     def update(self, others, screen=None):
         self.reaction -= 1

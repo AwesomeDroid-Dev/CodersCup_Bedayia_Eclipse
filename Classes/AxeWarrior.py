@@ -3,8 +3,8 @@ from Classes.Axe import Axe
 from Classes.Player import Player
 
 class AxeWarrior(Player):
-    def __init__(self, x, y, width, height, player):
-        super().__init__(x, y, width, height, "./Resources/axewarrior_spritesheet.png", speed=9)
+    def __init__(self, x, y, width, height, player, speed=9):
+        super().__init__(x, y, width, height, "./Resources/axewarrior_spritesheet.png", speed)
         self.boots = None
         self.player = player
         self.max_reaction = 15
@@ -25,6 +25,7 @@ class AxeWarrior(Player):
             else:
                 self.move_towards_player(self.player)
             self.reaction = self.max_reaction
+        
         return super().update(others, screen)
     
     def draw(self, screen):

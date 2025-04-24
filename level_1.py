@@ -8,27 +8,15 @@ from Classes.JetbootsBoss import JetbootsBoss
 from Classes.Object import Object
 from Classes.PeletLauncher import PelletLauncher
 from Classes.Player import Player
-import loser_screen
 import os
+
+import loser_screen
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
 global current_round
-current_round = 2
-
-# Initialize mixer at the start
-pygame.mixer.init()
-
-# Set up background music (enemy music)
-MUSIC_PATH = os.path.join('Sounds', 'enemy music.wav')
-if os.path.exists(MUSIC_PATH):
-    pygame.mixer.music.load(MUSIC_PATH)
-    pygame.mixer.music.play(-1)  # Loop indefinitely
-
-# Load sound effect for wave start
-WAVE_SOUND_PATH = os.path.join('Sounds', 'boss sound.wav')
-wave_sound = pygame.mixer.Sound(WAVE_SOUND_PATH) if os.path.exists(WAVE_SOUND_PATH) else None
+current_round = 3
 
 def init_game():
     
@@ -51,10 +39,6 @@ def init_wave_1():
     pygame.display.flip()
     pygame.time.wait(1000)
     
-    # Play wave start sound
-    if wave_sound:
-        wave_sound.play()
-        
     ground = Object(0, 550, 1200, 50, (255, 255, 255), invisible=True)
     wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
     wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
@@ -73,15 +57,11 @@ def init_wave_2():
     pygame.display.flip()
     pygame.time.wait(1000)
     
-    # Play wave start sound
-    if wave_sound:
-        wave_sound.play()
-        
     ground = Object(0, 550, 1200, 50, (255, 255, 255), invisible=True)
     wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
     wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
     player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
-    player.weapon = PelletLauncher(player)
+    player.weapon = Axe(-10, -10, 50, 50, player)
     player2 = BombFighter(100, 100, 12*3, 21*3, player)
     player2.weapon = PelletLauncher(player2)
     return [ground, wall1, wall2, player, player2]
@@ -96,10 +76,9 @@ def init_wave_3():
     pygame.display.flip()
     pygame.time.wait(1000)
     
-    # Play wave start sound
-    if wave_sound:
-        wave_sound.play()
-        
+    pygame.display.flip()
+    pygame.time.wait(1000)
+    
     ground = Object(0, 550, 1200, 50, (255, 255, 255), invisible=True)
     wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
     wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
