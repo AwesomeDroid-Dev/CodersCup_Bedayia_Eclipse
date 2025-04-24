@@ -40,10 +40,10 @@ def init_wave_1():
     ground = Object(0, 550, 1200, 50, (255, 255, 255), invisible=True)
     wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
     wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
-    player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=5)
+    player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
     player.weapon = PelletLauncher(player)
     player.boots = Jetboots(player)
-    player2 = AxeWarrior(100, 100, 20*3, 30*3, player, speed=5)
+    player2 = AxeWarrior(100, 100, 20*3, 25*3, player, speed=5)
     return [ground, wall1, wall2, player, player2]
 
 def init_wave_2():
@@ -60,6 +60,8 @@ def init_wave_2():
     wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
     wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
     player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
+    player.weapon = PelletLauncher(player)
+    player.boots = Jetboots(player)
     player2 = BombFighter(100, 100, 12*3, 21*3, player)
     player2.weapon = PelletLauncher(player2)
     return [ground, wall1, wall2, player, player2]
@@ -78,7 +80,9 @@ def init_wave_3():
     wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
     wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
     player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
-    player2 = JetbootsBoss(100, 100, player)
+    player.weapon = PelletLauncher(player)
+    player.boots = Jetboots(player)
+    player2 = Boss(100, 100, player)
     return [ground, wall1, wall2, player, player2]
 
 def main():

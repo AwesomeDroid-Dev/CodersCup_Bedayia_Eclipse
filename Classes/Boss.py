@@ -11,9 +11,10 @@ class Boss(MovableObject):
         self.player = player
         self.direction = "right"
         self.phase = "nothing" # rise_up, charging_laser, shooting x 3, charging_jetpack
-        self.max_health = 500
-        self.health = 500
+        self.max_health = 1000
+        self.health = 1000
         self.health_bar = PlayerBar(0, -20, 60, 12, self.max_health, self.health, (255, 0, 0), self)
+        self.explosion = None
         self.type = "player"
         self.spritesheet = pygame.transform.scale(pygame.image.load("./Resources/jetboot_boss_spritesheet.png").convert_alpha(), (80*3, 100*3))
         spritesheet = pygame.image.load("./Resources/jetboot_boss_spritesheet.png").convert_alpha()
@@ -27,6 +28,8 @@ class Boss(MovableObject):
         self.old_player_pos = self.player.pos.copy()
 
     def update(self, others, screen):
+        if self.explosion != None:
+            self.explosion.update()
         self.play_boss_cycle()
         if self.phase == "rise_up":
             self.rise_up()
@@ -34,6 +37,8 @@ class Boss(MovableObject):
             self.fall_down()
         elif self.phase == "shooting":
             self.weapon.launch(others, screen, self.old_player_pos)
+        elif self.phase == "explode":
+            self.explode(others)
         
         if self.boss_cycle % 25 == 0:
             self.old_player_pos = self.player.pos.copy()
@@ -50,20 +55,27 @@ class Boss(MovableObject):
             image = self.active_image.copy()
         self.health_bar.draw(surface)
         surface.blit(image, self.rect.topleft)
+        if self.explosion != None:
+            self.explosion.draw(surface)
         self.weapon.draw(surface)
     
     def play_boss_cycle(self):
         #print(self.boss_cycle)
         self.boss_cycle += 1
         self.boss_cycle = self.boss_cycle % 1500
-        if self.boss_cycle % 100 == 0 and self.boss_cycle <= 500:
+        if self.boss_cycle == 99:
+            self.phase = "explode"
+        elif self.boss_cycle % 100 == 0 and self.boss_cycle <= 500:
             self.phase = "rise_up"
-        elif self.boss_cycle % 200 == 0 and self.boss_cycle <= 1000:
+        elif self.boss_cycle % 100 == 0 and self.boss_cycle <= 1000:
             self.phase = "shooting"
         elif self.boss_cycle == 1001:
             self.phase = "fall_down"
         else:
             self.phase = "nothing"
+    
+    def explode(self, others):
+        self.explosion = Explosion(self, self.pos.copy(), others, radius=120, color=(200, 150, 50), damage=100)
     
     def fall_down(self):
         self.grav = 0.3
@@ -118,7 +130,7 @@ class BossLaserGun(PlayerTool):
 class BossLaser(Weapon):
     def __init__(self, player, start_pos, target_pos, height=10, damage=40):
         direction_vector = target_pos - start_pos
-        distance = direction_vector.length() + 100
+        distance = direction_vector.length() + 1000
         super().__init__(player, width=int(distance), height=height, color=(255, 100, 100), damage=damage)
 
         self.start_pos = pygame.Vector2(start_pos)
@@ -221,3 +233,61 @@ class BossLaser(Weapon):
                 return False  # gap found
         return True
 
+
+class Explosion(Weapon):
+    def __init__(self, owner, pos, others, radius=120, color=(200, 150, 50), damage=10):
+        super().__init__(owner, width=radius*2, height=radius*2, color=color, damage=damage)
+        self.radius = radius
+        self.active = True
+        self.pos = pos
+        self.pos.x -= self.radius  # Center the explosion
+        self.pos.y -= self.radius
+        self.others = others
+        self.timer = 15  # Shorter duration than plasma explosion
+        self.expansion_phase = 5  # Ticks for expansion
+        self.current_size = 0.1  # Start small
+        self.owner = owner
+        self.rect = pygame.Rect(int(self.pos.x), int(self.pos.y), self.radius*2, self.radius*2)
+    
+    def draw(self, surface):
+        if not self.active:
+            return
+            
+        # Calculate current size based on expansion phase
+        if self.expansion_phase > 0:
+            size_factor = 1 - (self.expansion_phase / 5)
+            current_radius = int(self.radius * size_factor)
+        else:
+            current_radius = self.radius * (self.timer / 10)  # Fade out
+        
+        # Create gradient explosion
+        surf = pygame.Surface((self.radius*2, self.radius*2), pygame.SRCALPHA)
+        
+        # Outer explosion ring
+        alpha = min(255, int(255 * (self.timer / 15)))
+        outer_color = (*self.color, alpha)
+        pygame.draw.circle(surf, outer_color, (self.radius, self.radius), current_radius)
+        
+        # Inner brighter core
+        inner_radius = max(3, int(current_radius * 0.6))
+        inner_color = (255, 200, 100, alpha)
+        pygame.draw.circle(surf, inner_color, (self.radius, self.radius), inner_radius)
+        
+        surface.blit(surf, (self.pos.x, self.pos.y))
+    
+    def update(self):
+        if not self.active:
+            self.owner.explosion = None
+            return
+            
+        if self.expansion_phase > 0:
+            self.expansion_phase -= 1
+            hits = self.check_collision(self.others)
+            for hit in hits:
+                # Changed check to exclude the explosion owner
+                if hit.type == "player" and hit != self.owner:
+                    hit.change_health(-self.damage)
+        else:
+            self.timer -= 1
+            if self.timer <= 0:
+                self.active = False

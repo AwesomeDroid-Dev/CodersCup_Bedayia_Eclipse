@@ -10,8 +10,8 @@ class AxeWarrior(Player):
         self.max_reaction = 15
         self.reaction = 15
         spritesheet = pygame.image.load("./Resources/axewarrior_spritesheet.png").convert_alpha()
-        self.image = spritesheet.subsurface(pygame.Rect(0, 0, 25, 35))
-        self.holding_image = spritesheet.subsurface(pygame.Rect(24, 0, 25, 35))
+        self.image = spritesheet.subsurface(pygame.Rect(0, 0, 25, 30))
+        self.holding_image = spritesheet.subsurface(pygame.Rect(24, 0, 25, 30))
         self.rect = self.image.get_rect(center=self.pos)
         self.weapon = Axe(-10, 10, 50, 50, self)
 
