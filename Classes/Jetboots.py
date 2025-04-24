@@ -26,7 +26,7 @@ class Jetboots(PlayerTool):
         self.player.speed = self.initial_speed
         self.active = False
     
-    def update(self):
+    def update(self, others):
         self.followPlayer(self.player)
     
     def draw(self, screen):

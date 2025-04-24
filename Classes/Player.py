@@ -37,7 +37,7 @@ class Player(MovableObject):
         self.health_bar = PlayerBar(0, -20, 60, 12, self.max_health, self.health, (0, 255, 0), self)
         self.weapon = None
         self.boots = None
-        spritesheet = pygame.image.load(image).convert_alpha()
+        #spritesheet = pygame.image.load(image).convert_alpha()
         #self.image = pygame.transform.scale(spritesheet.subsurface((21, 0, 12, 21)), (self.width, self.height))
         #self.holding_image = pygame.transform.scale(spritesheet.subsurface((0, 0, 12, 21)), (self.width, self.height))
         self.image = pygame.transform.scale(pygame.image.load("./Resources/player_standing.png").convert_alpha(), (self.width, self.height))
@@ -53,7 +53,7 @@ class Player(MovableObject):
         #self.weapon = Weapon(self, 10, 5, (255, 0, 0), 10)
         #self.weapon = PelletLauncher(self)
         self.weapon = Axe(-10, 0, 50, 50, self)
-        self.boots = Jetboots(self)
+        #self.boots = Jetboots(self)
 
     def control(self, key, value):
         if key in self.keys:
@@ -112,7 +112,7 @@ class Player(MovableObject):
                 self.weapon.draw(screen)
     
         if self.boots is not None:
-            self.boots.update()
+            self.boots.update(others)
             if screen:
                 self.boots.draw(screen)
 
