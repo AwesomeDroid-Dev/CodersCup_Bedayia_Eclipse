@@ -114,8 +114,7 @@ class Menu:
         # Level buttons
         level1_img = load_pair("level1")
         level2_img = load_pair("level2")
-        level3_img = load_pair("level3")
-        level4_img = load_pair("level4")
+
 
         sound_on_img = load_btn_image("assets/sound_on_btn.png")
         sound_off_img = load_btn_image("assets/sound_off_btn.png")
@@ -134,8 +133,8 @@ class Menu:
 
         # Level menu buttons - with narrower, less wide buttons
         self.level_menu_btns = create_buttons(
-            [level1_img, level2_img, level3_img, level4_img],
-            [self.start_level1, self.start_level2, self.start_level3, self.start_level4],
+            [level1_img, level2_img],
+            [self.start_level1, self.start_level2],
             spacing=15,
             width=level_button_width,
             height=level_button_height
@@ -220,16 +219,6 @@ class Menu:
         level_2.init_game()
         level_2.main()
 
-    def start_level3(self):
-        if click_sound:
-            click_sound.play()
-        print("Starting Level 3...")
-
-    def start_level4(self):
-        if click_sound:
-            click_sound.play()
-        print("Starting Level 4...")
-
     def return_to_main_menu(self):
         if click_sound:
             click_sound.play()
@@ -242,9 +231,17 @@ class Menu:
         lines = [
             "Game Credits",
             "",
-            "Game Design: Your Name",
-            "Developer: Your Name",
-            "Music: Composer Name",
+            "Game Design:",
+            "Ziyad Meligy",
+            "Omar Samir",
+            "",
+            "Developers:",
+            "Noureddin elazab",
+            "Ziyad Meligy",
+            "",
+            "Music:",
+            "Omar Samir",
+            "",
             "Thanks for playing!"
         ]
         for i, line in enumerate(lines):
