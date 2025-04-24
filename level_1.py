@@ -20,11 +20,11 @@ SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
 global current_round
-current_round = 3
+current_round = 1
 
 round_scores = [
-    86,
-    75,
+    100,
+    100,
     100
 ]
 
