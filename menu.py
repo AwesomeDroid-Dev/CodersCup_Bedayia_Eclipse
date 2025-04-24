@@ -1,24 +1,42 @@
 import pygame
 import sys
+import os
 
 import level_1
 
 # Initialize pygame
 pygame.init()
 
-# Set screen size and create a window
-screen_width = 1200
-screen_height = 600
-global screen
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("Game Menu")
-    
-global running
-running = True
+# Initialize mixer if not already done
+if not pygame.mixer.get_init():
+    pygame.mixer.init()
 
-    # Load button images
+# Play menu background music
+MENU_MUSIC_PATH = os.path.join('Sounds', 'menu sound.wav')
+if os.path.exists(MENU_MUSIC_PATH):
+    pygame.mixer.music.load(MENU_MUSIC_PATH)
+    pygame.mixer.music.play(-1)
+
+# Load clicking sound for menu selection
+CLICK_SOUND_PATH = os.path.join('Sounds', 'clicking sound.wav')
+click_sound = pygame.mixer.Sound(CLICK_SOUND_PATH) if os.path.exists(CLICK_SOUND_PATH) else None
+
+# Keep references to all sound effects for muting/unmuting
+sound_effects = []
+if click_sound:
+    sound_effects.append(click_sound)
+
+# Store music state
+music_playing = True
+
+# Load button images
 def load_btn_image(image_name):
     return pygame.image.load(image_name).convert_alpha()
+
+# Function to set sound effects volume
+def set_sound_effects_volume(volume):
+    for s in sound_effects:
+        s.set_volume(volume)
 
 # Button class to handle button creation and interaction
 class Btn:
@@ -57,7 +75,7 @@ class Menu:
 
         # Load background image
         self.bg = pygame.image.load("assets/menu_background.png").convert_alpha()
-        self.bg = pygame.transform.scale(self.bg, (screen_width, screen_height))
+        self.bg = pygame.transform.scale(self.bg, (1200, 600))
 
         # Button dimensions
         button_width = 300
@@ -77,13 +95,13 @@ class Menu:
         # Common function to space and center buttons vertically
         def create_buttons(images, actions, spacing=20, width=button_width, height=button_height):
             total_height = len(images) * height + (len(images) - 1) * spacing
-            start_y = (screen_height - total_height) // 2 + vertical_offset
+            start_y = (600 - total_height) // 2 + vertical_offset
             buttons = []
             for i in range(len(images)):
                 img, hover = images[i]
                 action = actions[i]
                 y = start_y + i * (height + spacing)
-                buttons.append(Btn(img, screen_width // 2, y, width, height, action, hover))
+                buttons.append(Btn(img, 1200 // 2, y, width, height, action, hover))
             return buttons
 
         start_img = load_pair("start")
@@ -123,22 +141,26 @@ class Menu:
 
         # Options menu buttons with resized sound/music buttons
         small_btn_size = 64  # size for circular buttons like sound/music
-        self.sound_on_btn = Btn(sound_on_img, screen_width // 2, 200 + vertical_offset, small_btn_size, small_btn_size, self.toggle_sound)
-        self.sound_off_btn = Btn(sound_off_img, screen_width // 2, 200 + vertical_offset, small_btn_size, small_btn_size, self.toggle_sound)
-        self.music_on_btn = Btn(music_on_img, screen_width // 2, 300 + vertical_offset, small_btn_size, small_btn_size, self.toggle_music)
-        self.music_off_btn = Btn(music_off_img, screen_width // 2, 300 + vertical_offset, small_btn_size, small_btn_size, self.toggle_music)
+        self.sound_on_btn = Btn(sound_on_img, 1200 // 2, 200 + vertical_offset, small_btn_size, small_btn_size, self.toggle_sound)
+        self.sound_off_btn = Btn(sound_off_img, 1200 // 2, 200 + vertical_offset, small_btn_size, small_btn_size, self.toggle_sound)
+        self.music_on_btn = Btn(music_on_img, 1200 // 2, 300 + vertical_offset, small_btn_size, small_btn_size, self.toggle_music)
+        self.music_off_btn = Btn(music_off_img, 1200 // 2, 300 + vertical_offset, small_btn_size, small_btn_size, self.toggle_music)
 
         self.sound_on = True
         self.music_on = True
 
-        self.credits_scroll_y = screen_height
+        self.credits_scroll_y = 600
         self.current_menu_btns = self.main_menu_btns
 
     def open_level_menu(self):
+        if click_sound:
+            click_sound.play()
         self.state = "level"
         self.current_menu_btns = self.level_menu_btns + [self.back_btn]
 
     def open_options_menu(self):
+        if click_sound:
+            click_sound.play()
         self.state = "options"
         if self.sound_on:
             sound_btn = self.sound_on_btn
@@ -148,39 +170,66 @@ class Menu:
         self.current_menu_btns = [sound_btn, music_btn, self.back_btn]
 
     def open_credits_menu(self):
+        if click_sound:
+            click_sound.play()
         self.state = "credits"
         self.current_menu_btns = []
-        self.credits_scroll_y = screen_height
+        self.credits_scroll_y = 600
 
     def toggle_sound(self):
+        if click_sound:
+            click_sound.play()
         self.sound_on = not self.sound_on
         print(f"Sound {'On' if self.sound_on else 'Off'}")
+        set_sound_effects_volume(1.0 if self.sound_on else 0.0)
         self.open_options_menu()
 
     def toggle_music(self):
+        global music_playing
+        if click_sound:
+            click_sound.play()
         self.music_on = not self.music_on
         print(f"Music {'On' if self.music_on else 'Off'}")
+        if self.music_on:
+            if not pygame.mixer.music.get_busy():
+                pygame.mixer.music.play(-1)
+            music_playing = True
+        else:
+            pygame.mixer.music.stop()
+            music_playing = False
         self.open_options_menu()
 
     def quit_game(self):
+        if click_sound:
+            click_sound.play()
         pygame.quit()
         sys.exit()
 
     def start_level1(self):
+        if click_sound:
+            click_sound.play()
         running = False
         level_1.init_game()
         level_1.main()
 
     def start_level2(self):
+        if click_sound:
+            click_sound.play()
         print("Starting Level 2...")
 
     def start_level3(self):
+        if click_sound:
+            click_sound.play()
         print("Starting Level 3...")
 
     def start_level4(self):
+        if click_sound:
+            click_sound.play()
         print("Starting Level 4...")
 
     def return_to_main_menu(self):
+        if click_sound:
+            click_sound.play()
         self.state = "main"
         self.current_menu_btns = self.main_menu_btns
 
@@ -197,11 +246,11 @@ class Menu:
         ]
         for i, line in enumerate(lines):
             text = font.render(line, True, (255, 255, 255))
-            text_rect = text.get_rect(center=(screen_width // 2, self.credits_scroll_y + i * 50))
+            text_rect = text.get_rect(center=(1200 // 2, self.credits_scroll_y + i * 50))
             self.screen.blit(text, text_rect)
         self.credits_scroll_y -= 1
         if self.credits_scroll_y + len(lines) * 50 < 0:
-            self.credits_scroll_y = screen_height
+            self.credits_scroll_y = 600
 
     def draw(self):
         self.screen.fill((0, 0, 0))

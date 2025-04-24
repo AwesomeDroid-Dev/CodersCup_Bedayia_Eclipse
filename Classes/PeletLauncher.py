@@ -6,16 +6,16 @@ from Classes.MovableObject import MovableObject
 
 class PelletLauncher(PlayerTool):
     def __init__(self, player):
-        super().__init__(-player.width/2+12, 0, 12*3, 21*3, player)
+        super().__init__(-15, 15, 39*2, 16*2, player)
         self.cooldown = 0
         self.pellet = None
         self.explosion = None
         
         # Try to load the image, with fallback to a basic rectangle
         try:
-            spritesheet = pygame.image.load("./Resources/plasmagun_spritesheet.png").convert_alpha()
-            self.image = pygame.transform.scale(spritesheet.subsurface((8, 0, 12, 21)), (self.width, self.height))
-            self.active_image = pygame.transform.scale(spritesheet.subsurface((29, 0, 12, 21)), (self.width, self.height))
+            spritesheet = pygame.image.load("./Resources/player_gun.png").convert_alpha()
+            self.image = pygame.transform.scale(spritesheet.subsurface((0, 0, 39, 16)), (self.width, self.height))
+            self.active_image = pygame.transform.scale(spritesheet.subsurface((39, 0, 39, 16)), (self.width, self.height))
         except:
             # Create a simple rectangle if image loading fails
             self.image = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
@@ -120,7 +120,7 @@ class Pellet(MovableObject):
     def collision(self, others):
         for other in others:
             if other != self.owner and self.rect.colliderect(other.rect):  # Use 'owner' instead of 'player'
-                if other.type == "player":
+                if hasattr(other, 'change_health'):
                     other.change_health(-self.damage)
                 self.kill()
                 return True

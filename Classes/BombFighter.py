@@ -38,6 +38,7 @@ class BombFighter(Player):
     def draw(self, screen):
         return super().draw(screen)
     
+    
     def move_towards_player(self, player):
         # Reset all controls
         self.reset_controls()
