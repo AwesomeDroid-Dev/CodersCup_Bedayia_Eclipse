@@ -34,7 +34,7 @@ class Player(MovableObject):
         self.direction = "right"
         self.max_health = 100
         self.health = 100
-        self.health_bar = PlayerBar(0, -10, self.width, 5, self.max_health, self.health, (0, 255, 0), self)
+        self.health_bar = PlayerBar(0, -20, 60, 12, self.max_health, self.health, (0, 255, 0), self)
         self.weapon = None
         self.boots = None
         spritesheet = pygame.image.load(image).convert_alpha()
