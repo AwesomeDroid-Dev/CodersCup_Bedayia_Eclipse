@@ -13,7 +13,7 @@ SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
 def init_game():
-    return init_wave_2()
+    return init_wave_3()
 
 def init_wave_1():
     ground = Object(0, 550, 1200, 50, (255, 255, 255))
@@ -38,15 +38,7 @@ def init_wave_3():
     wall1 = Object(0, 0, 50, 600, (255, 255, 255))
     wall2 = Object(1150, 0, 50, 600, (255, 255, 255))
     player = Player(600, 100, 12*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
-    player2 = AIPlayer(100, 100, 12*3, 21*3, player)
-    return [ground, wall1, wall2, player, player2]
-
-def init_wave_4():
-    ground = Object(0, 550, 1200, 50, (255, 255, 255))
-    wall1 = Object(0, 0, 50, 600, (255, 255, 255))
-    wall2 = Object(1150, 0, 50, 600, (255, 255, 255))
-    player = Player(600, 100, 12*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
-    player2 = AIPlayer(100, 100, 12*3, 21*3, player)
+    player2 = Boss(100, 100, player)
     return [ground, wall1, wall2, player, player2]
 
 def main():

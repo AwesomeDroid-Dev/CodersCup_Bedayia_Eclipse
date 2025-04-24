@@ -14,7 +14,7 @@ class PlayerTool(pygame.sprite.Sprite):
         self.followPlayer(player)
 
     def followPlayer(self, player):
-        if self.player.direction == "right":
+        if player.direction == "right":
             self.pos.x = player.pos.x + player.width + self.offset.x
         else:
             self.pos.x = player.pos.x - self.width - self.offset.x
