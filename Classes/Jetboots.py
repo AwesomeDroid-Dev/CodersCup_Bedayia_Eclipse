@@ -3,17 +3,17 @@ from Classes.PlayerTool import PlayerTool
 
 class Jetboots(PlayerTool):
     def __init__(self, player):
-        super().__init__(-player.width+9, 13.5, 12*3, 21*3, player)
+        super().__init__(-player.width+9, 50, 35, 24, player)
         self.initial_jump_strength = self.player.jump_strength
         self.initial_speed = self.player.speed
         self.active = False
         
         spritesheet = pygame.image.load("./Resources/jetboots_spritesheet.png").convert_alpha()
-        self.image = pygame.transform.scale(spritesheet.subsurface((0, 0, 12, 21)), (self.width, self.height))
-        self.acive_image = pygame.transform.scale(spritesheet.subsurface((21, 0, 12, 21)), (self.width, self.height))
+        self.image = pygame.transform.scale(spritesheet.subsurface((35, 0, 35, 24)), (self.width, self.height))
+        self.acive_image = pygame.transform.scale(spritesheet.subsurface((0, 0, 35, 24)), (self.width, self.height))
         self.rect = self.image.get_rect()
 
-        self.type = "jetboots"
+        self.type = "boots"
     
     def activate(self):
         self.player.jump_strength = 2

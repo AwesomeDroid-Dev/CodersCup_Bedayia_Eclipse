@@ -152,3 +152,9 @@ class Player(MovableObject):
             screen.blit(image, self.rect)
         else:
             screen.blit(pygame.transform.flip(image, True, False), self.rect)
+        
+        if self.weapon is not None:
+            self.weapon.draw(screen)
+        
+        if self.boots is not None:
+            self.boots.draw(screen)

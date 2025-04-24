@@ -91,16 +91,20 @@ def main():
                 obj.draw(screen)
             
             collectable.update(objects, screen)
-                
+            
+            if hasattr(player2, "health") and player2.health <= 0:
+                player2 = JetbootsItem(player2.pos.x+100, player2.pos.y, 10, 10)
+            
             # Check for game over
             if player.health <= 0:
                 game_over = True
-            if player2.health <= 0:
-                next_round = True
-                global current_round
-                current_round += 1
-                global timer
+            if hasattr(player2, "collected") and player2.collected == True:
+                #next_round = True
+                #global current_round
+                #current_round += 1
+                #global timer
                 timer = pygame.time.get_ticks()
+                pass
                 
         
         if next_round:

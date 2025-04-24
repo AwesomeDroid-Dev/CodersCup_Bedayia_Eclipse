@@ -5,22 +5,28 @@ from Classes.PlayerTool import PlayerTool
 from Classes.Weapon import Weapon
 
 class EMPboots(PlayerTool):
-    def __init__(self, player, width=20, height=10):
-        super().__init__(0, 10, width, height, player)
+    def __init__(self, player):
+        super().__init__(-player.width+9, 50, 35, 24, player)
         self.player = player
         self.active = False
         self.cooldown = 0
         self.emp_wave = None
         self.color = (0, 200, 255)  # Bright blue color for EMP boots
         
-        # Create a simple rectangle
-        self.image = pygame.Surface((width, height), pygame.SRCALPHA)
-        pygame.draw.rect(self.image, self.color, (0, 0, width, height))
+        image = pygame.image.load("./Resources/empboots.png").convert_alpha()
+        self.image = pygame.transform.scale((image), (self.width, self.height))
+        self.rect = self.image.get_rect()
+
+        self.type = "boots"
     
     def draw(self, surface):
         if self.emp_wave is not None:
             self.emp_wave.draw(surface)
-        surface.blit(self.image, self.rect)
+        
+        if self.player.direction == "right":
+            surface.blit(self.image, self.rect)
+        else:
+            surface.blit(pygame.transform.flip(self.image, True, False), self.rect)
     
     def update(self, others=None):
         self.followPlayer(self.player)
