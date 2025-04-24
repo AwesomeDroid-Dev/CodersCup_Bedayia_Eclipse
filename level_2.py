@@ -4,6 +4,7 @@ from Classes.Axe import Axe
 from Classes.AxeWarrior import AxeWarrior
 from Classes.BombFighter import BombFighter
 from Classes.Boss import Boss
+from Classes.Jetboots import Jetboots
 from Classes.JetbootsBoss import JetbootsBoss
 from Classes.Object import Object
 from Classes.PeletLauncher import PelletLauncher
@@ -39,8 +40,9 @@ def init_wave_1():
     ground = Object(0, 550, 1200, 50, (255, 255, 255), invisible=True)
     wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
     wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
-    player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
+    player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=5)
     player.weapon = PelletLauncher(player)
+    player.boots = Jetboots(player)
     player2 = AxeWarrior(100, 100, 20*3, 30*3, player, speed=5)
     return [ground, wall1, wall2, player, player2]
 

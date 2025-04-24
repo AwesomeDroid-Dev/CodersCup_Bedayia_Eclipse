@@ -11,8 +11,8 @@ class JetbootsBoss(MovableObject):
         self.player = player
         self.direction = "right"
         self.phase = "nothing" # rise_up, charging_laser, shooting x 3, charging_jetpack
-        self.max_health = 50
-        self.health = 50
+        self.max_health = 500
+        self.health = 500
         self.health_bar = PlayerBar(0, -20, 60, 12, self.max_health, self.health, (255, 0, 0), self)
         self.explosion = None
         self.type = "player"
