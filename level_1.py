@@ -8,7 +8,9 @@ from Classes.JetbootsBoss import JetbootsBoss
 from Classes.Object import Object
 from Classes.PeletLauncher import PelletLauncher
 from Classes.Player import Player
-import os
+from Classes.Collectable import Collectable
+from Classes.JetbootsItem import JetbootsItem
+from Classes.PelletLauncherItem import PelletLauncherItem
 
 import loser_screen
 
@@ -16,10 +18,9 @@ SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
 global current_round
-current_round = 1
+current_round = 3
 
 def init_game():
-    
     if current_round == 1:
         return init_wave_1()
     elif current_round == 2:
@@ -99,6 +100,8 @@ def main():
     running = True
     game_over = False
     next_round = False
+    enemy_defeated = False
+    dropped_item = None  # To track if an item has been dropped
     
     while running:
         screen.fill((0, 0, 0))
@@ -122,8 +125,47 @@ def main():
             player.control('boots', keysDown[pygame.K_PERIOD])
             player.update([obj for obj in objects if obj != player], screen)
             
-            # Player 2 controls
-            player2.update([obj for obj in objects if obj != player2], screen)
+            # Player 2 controls if still alive
+            if player2.health > 0:
+                player2.update([obj for obj in objects if obj != player2], screen)
+            # If enemy is defeated but item hasn't been dropped yet
+            elif not enemy_defeated:
+                enemy_defeated = True
+                global current_round
+                player2.type = "defeated"
+                # Create the appropriate item based on current round
+                if current_round == 1:
+                    # First wave drops no special item, just move to next round
+                    next_round = True
+                    current_round += 1
+                    global timer
+                    timer = pygame.time.get_ticks()
+                elif current_round == 2:
+                    # BombFighter drops PelletLauncherItem
+                    dropped_item = PelletLauncherItem(600, player2.pos.y, 50, 50, 
+                                                     image_path="./Resources/pelletlauncher.png", 
+                                                     item_type="weapon", value=10)
+                    objects.append(dropped_item)
+                elif current_round == 3:
+                    # JetbootsBoss drops JetbootsItem
+                    dropped_item = JetbootsItem(600, player2.pos.y, 50, 50, 
+                                               image_path="./Resources/jetboots.png", 
+                                               item_type="boots", value=10)
+                    objects.append(dropped_item)
+            
+            # Update and check dropped item if it exists
+            if dropped_item and dropped_item in objects:
+                dropped_item.update(objects, screen)
+                
+                # Check if the item has been collected
+                if hasattr(dropped_item, "collected") and dropped_item.collected:
+                    # Remove item from objects list
+                    objects.remove(dropped_item)
+                    dropped_item = None
+                    # Prepare for next round
+                    next_round = True
+                    current_round += 1
+                    timer = pygame.time.get_ticks()
             
             # Draw all objects
             for obj in objects:
@@ -132,13 +174,6 @@ def main():
             # Check for game over
             if player.health <= 0:
                 game_over = True
-            if player2.health <= 0:
-                next_round = True
-                global current_round
-                current_round += 1
-                global timer
-                timer = pygame.time.get_ticks()
-                
         
         if next_round:
             timeSince = pygame.time.get_ticks() - timer
@@ -147,12 +182,21 @@ def main():
             screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, SCREEN_HEIGHT // 2 - text.get_height() // 2))
             if timeSince / 1000 >= 3:
                 next_round = False
+                enemy_defeated = False
+                dropped_item = None
                 objects = init_game()
                 if objects:
                     player = objects[3]
                     player2 = objects[4]
                     game_over = False
                 else:
+                    # Game completed
+                    screen.fill((0, 255, 0))
+                    font = pygame.font.Font("./Resources/PressStart2P-Regular.ttf", 40)
+                    text = font.render("LEVEL COMPLETED!", True, (255, 255, 0))
+                    screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, SCREEN_HEIGHT // 2 - text.get_height() // 2))
+                    pygame.display.update()
+                    pygame.time.wait(3000)
                     running = False
         
         if game_over:
@@ -164,11 +208,12 @@ def main():
                     player = objects[3]
                     player2 = objects[4]
                     game_over = False
+                    enemy_defeated = False
+                    dropped_item = None
                 else:
                     running = False
             elif action == "quit":
                 running = False
-
         
         pygame.display.update()
         clock.tick(60)
