@@ -1,3 +1,4 @@
+import sys
 import pygame
 from Classes.AIPlayer import AIPlayer
 from Classes.Axe import Axe
@@ -10,12 +11,19 @@ from Classes.Object import Object
 from Classes.PeletLauncher import PelletLauncher
 from Classes.Player import Player
 import loser_screen
+import victory_screen
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
 global current_round
 current_round = 1
+
+round_scores = [
+    100,
+    100,
+    100
+]
 
 def init_game():
     if current_round == 1:
@@ -98,6 +106,8 @@ def main():
     running = True
     game_over = False
     next_round = False
+    enemy_defeated = False
+    dropped_item = None  # To track if an item has been dropped
     
     while running:
         screen.fill((0, 0, 0))
@@ -121,8 +131,34 @@ def main():
             player.control('boots', keysDown[pygame.K_PERIOD])
             player.update([obj for obj in objects if obj != player], screen)
             
-            # Player 2 controls
-            player2.update([obj for obj in objects if obj != player2], screen)
+            # Player 2 controls if still alive
+            if player2.health > 0:
+                player2.update([obj for obj in objects if obj != player2], screen)
+            # If enemy is defeated but item hasn't been dropped yet
+            elif not enemy_defeated:
+                enemy_defeated = True
+                global current_round
+                player2.type = "defeated"
+
+                next_round = True
+                current_round += 1
+                global timer
+                timer = pygame.time.get_ticks()
+        
+            
+            # Update and check dropped item if it exists
+            if dropped_item and dropped_item in objects:
+                dropped_item.update(objects, screen)
+                
+                # Check if the item has been collected
+                if hasattr(dropped_item, "collected") and dropped_item.collected:
+                    # Remove item from objects list
+                    objects.remove(dropped_item)
+                    dropped_item = None
+                    # Prepare for next round
+                    next_round = True
+                    current_round += 1
+                    timer = pygame.time.get_ticks()
             
             # Draw all objects
             for obj in objects:
@@ -131,28 +167,33 @@ def main():
             # Check for game over
             if player.health <= 0:
                 game_over = True
-            if player2.health <= 0:
-                next_round = True
-                global current_round
-                current_round += 1
-                global timer
-                timer = pygame.time.get_ticks()
-                
         
         if next_round:
             timeSince = pygame.time.get_ticks() - timer
             font = pygame.font.Font("./Resources/PressStart2P-Regular.ttf", 50)
             text = font.render(f"Next Round in {3 - int(timeSince / 1000)} seconds", True, (255, 255, 255))
+            round_scores[current_round - 2] = player.health
             screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, SCREEN_HEIGHT // 2 - text.get_height() // 2))
             if timeSince / 1000 >= 3:
                 next_round = False
+                enemy_defeated = False
+                dropped_item = None
                 objects = init_game()
                 if objects:
                     player = objects[3]
                     player2 = objects[4]
                     game_over = False
                 else:
-                    running = False
+                    # Example usage
+                    action = victory_screen.show(screen, round_scores[0]+round_scores[1]+round_scores[2], {"Round 1": round_scores[0], "Round 2": round_scores[1], "Round 3": round_scores[2]})
+                    if action == "home":
+                        # Go to home screen
+                        running = False
+                    elif action == "restart":
+                        running = False
+                    elif action == "quit":
+                        pygame.quit()
+                        sys.exit()
         
         if game_over:
             action = loser_screen.show(screen)
@@ -163,11 +204,12 @@ def main():
                     player = objects[3]
                     player2 = objects[4]
                     game_over = False
+                    enemy_defeated = False
+                    dropped_item = None
                 else:
                     running = False
             elif action == "quit":
                 running = False
-
         
         pygame.display.update()
         clock.tick(60)

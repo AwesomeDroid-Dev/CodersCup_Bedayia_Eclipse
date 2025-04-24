@@ -1,3 +1,4 @@
+import sys
 import pygame
 from Classes.AIPlayer import AIPlayer
 from Classes.Axe import Axe
@@ -13,12 +14,19 @@ from Classes.JetbootsItem import JetbootsItem
 from Classes.PelletLauncherItem import PelletLauncherItem
 
 import loser_screen
+import victory_screen
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
 global current_round
-current_round = 1
+current_round = 3
+
+round_scores = [
+    86,
+    75,
+    100
+]
 
 def init_game():
     if current_round == 1:
@@ -179,6 +187,7 @@ def main():
             timeSince = pygame.time.get_ticks() - timer
             font = pygame.font.Font("./Resources/PressStart2P-Regular.ttf", 50)
             text = font.render(f"Next Round in {3 - int(timeSince / 1000)} seconds", True, (255, 255, 255))
+            round_scores[current_round - 2] = player.health
             screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, SCREEN_HEIGHT // 2 - text.get_height() // 2))
             if timeSince / 1000 >= 3:
                 next_round = False
@@ -190,14 +199,17 @@ def main():
                     player2 = objects[4]
                     game_over = False
                 else:
-                    # Game completed
-                    screen.fill((0, 255, 0))
-                    font = pygame.font.Font("./Resources/PressStart2P-Regular.ttf", 40)
-                    text = font.render("LEVEL COMPLETED!", True, (255, 255, 0))
-                    screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, SCREEN_HEIGHT // 2 - text.get_height() // 2))
-                    pygame.display.update()
-                    pygame.time.wait(3000)
-                    running = False
+                    # Example usage
+                    action = victory_screen.show(screen, round_scores[0]+round_scores[1]+round_scores[2], {"Round 1": round_scores[0], "Round 2": round_scores[1], "Round 3": round_scores[2]})
+                    if action == "home":
+                        # Go to home screen
+                        running = False
+                    elif action == "restart":
+                        running = False
+                    elif action == "quit":
+                        pygame.quit()
+                        sys.exit()
+
         
         if game_over:
             action = loser_screen.show(screen)
