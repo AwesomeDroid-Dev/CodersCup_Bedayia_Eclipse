@@ -11,8 +11,8 @@ class Boss(MovableObject):
         self.player = player
         self.direction = "right"
         self.phase = "nothing" # rise_up, charging_laser, shooting x 3, charging_jetpack
-        self.max_health = 100
-        self.health = 100
+        self.max_health = 500
+        self.health = 500
         self.health_bar = PlayerBar(0, -20, 60, 12, self.max_health, self.health, (255, 0, 0), self)
         self.type = "player"
         self.weapon = BossLaserGun(self, 0, 0, 80, 20, self.player)
@@ -28,7 +28,10 @@ class Boss(MovableObject):
             self.fall_down()
         elif self.phase == "shooting":
             self.weapon.launch(others, screen, self.old_player_pos)
+        
+        if self.boss_cycle % 25 == 0:
             self.old_player_pos = self.player.pos.copy()
+        
         self.applyGravity(others)
         self.updateVelocity(others)
         self.weapon.update(others, screen)
@@ -45,7 +48,6 @@ class Boss(MovableObject):
         self.boss_cycle = self.boss_cycle % 1500
         if self.boss_cycle % 100 == 0 and self.boss_cycle <= 500:
             self.phase = "rise_up"
-            self.old_player_pos = self.player.pos.copy()
         elif self.boss_cycle % 200 == 0 and self.boss_cycle <= 1000:
             self.phase = "shooting"
         elif self.boss_cycle == 1001:
