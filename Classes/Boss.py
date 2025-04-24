@@ -13,7 +13,7 @@ class Boss(MovableObject):
         self.phase = "nothing" # rise_up, charging_laser, shooting x 3, charging_jetpack
         self.max_health = 100
         self.health = 100
-        self.health_bar = PlayerBar(0, -10, self.width, 5, self.max_health, self.health, (0, 255, 0), self)
+        self.health_bar = PlayerBar(0, -20, 60, 12, self.max_health, self.health, (255, 0, 0), self)
         self.type = "player"
         self.weapon = BossLaserGun(self, 0, 0, 80, 20, self.player)
         self.boss_cycle = 0
@@ -33,10 +33,9 @@ class Boss(MovableObject):
         self.updateVelocity(others)
         self.weapon.update(others, screen)
         self.draw(screen)
-        self.health_bar.update(self.health)
-        self.health_bar.draw(screen)
 
     def draw(self, surface):
+        self.health_bar.draw(surface)
         pygame.draw.rect(surface, (255, 0, 0), self.rect)
         self.weapon.draw(surface)
     
@@ -65,7 +64,6 @@ class Boss(MovableObject):
         self.health += amount
         self.health = max(0, min(self.health, self.max_health))
         self.health_bar.update(self.health)
-        print(self.health)
 
 class BossLaserGun(PlayerTool):
     def __init__(self, boss, xOffset, yOffset, width, height, player):

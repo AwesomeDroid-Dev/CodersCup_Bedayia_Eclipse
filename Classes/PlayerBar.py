@@ -239,7 +239,11 @@ class PlayerBar(PlayerTool):
         text_pos = (self.rect.centerx, self.rect.centery)
         draw_outlined_text(health_text, font, text_pos, (255, 255, 255), (0, 0, 0))
 
-    def update(self, value):
+    def update(self, value, instant=False):
+        if instant:
+            self.displayed_health = value
+            self.health = value
+            return
         # Store previous health for animation
         self.previous_health = self.displayed_health
         old_health = self.health
