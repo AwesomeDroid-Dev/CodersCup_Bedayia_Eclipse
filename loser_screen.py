@@ -128,7 +128,7 @@ class GameOverScreen:
         # Create overlay with fade
         overlay = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         alpha = self.update_animations()
-        overlay.fill((0, 0, 0, min(150, alpha)))
+        overlay.fill((0, 0, 0, min(150, int(alpha))))
         self.screen.blit(overlay, (0, 0))
         
         # Draw bouncing title

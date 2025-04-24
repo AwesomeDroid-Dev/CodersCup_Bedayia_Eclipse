@@ -42,7 +42,7 @@ def init_wave_1():
     wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
     player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
     player.weapon = Axe(-10, -10, 50, 50, player)
-    player2 = AxeWarrior(100, 100, 12*3, 21*3, player)
+    player2 = AxeWarrior(100, 100, 20*3, 30*3, player)
     return [ground, wall1, wall2, player, player2]
 
 def init_wave_2():

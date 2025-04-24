@@ -1,16 +1,19 @@
 import pygame
+from Classes.Axe import Axe
 from Classes.Player import Player
 
 class AxeWarrior(Player):
     def __init__(self, x, y, width, height, player):
-        super().__init__(x, y, width, height, "./Resources/axewarrior.png", speed=9)
+        super().__init__(x, y, width, height, "./Resources/axewarrior_spritesheet.png", speed=9)
         self.boots = None
         self.player = player
         self.max_reaction = 15
         self.reaction = 15
-        self.image = pygame.transform.scale(pygame.image.load("./Resources/axewarrior.png").convert_alpha(), (width, height))
-        self.holding_image = pygame.transform.scale(pygame.image.load("./Resources/axewarrior.png").convert_alpha(), (width, height))
+        spritesheet = pygame.image.load("./Resources/axewarrior_spritesheet.png").convert_alpha()
+        self.image = spritesheet.subsurface(pygame.Rect(0, 0, 25, 35))
+        self.holding_image = spritesheet.subsurface(pygame.Rect(24, 0, 25, 35))
         self.rect = self.image.get_rect(center=self.pos)
+        self.weapon = Axe(-10, 10, 50, 50, self)
 
         self.type = "AIPlayer"
     
@@ -22,7 +25,6 @@ class AxeWarrior(Player):
             else:
                 self.move_towards_player(self.player)
             self.reaction = self.max_reaction
-        
         return super().update(others, screen)
     
     def draw(self, screen):

@@ -1,3 +1,4 @@
+import pygame
 from Classes.Player import Player
 from pygame.math import Vector2
 
@@ -10,6 +11,10 @@ class BombFighter(Player):
         self.reaction = 15
         self.prevPos = Vector2(x, y)
         self.goal = "attack" # "attack" or "run" or "move" or "panick"
+        spritesheet = pygame.image.load("./Resources/bombfighter.png").convert_alpha()
+        self.image = spritesheet.subsurface(pygame.Rect(0, 0, 25, 35))
+        self.holding_image = spritesheet.subsurface(pygame.Rect(86, 56, 25, 35))
+        self.rect = self.image.get_rect(center=self.pos)
 
         self.type = "AIPlayer"
     

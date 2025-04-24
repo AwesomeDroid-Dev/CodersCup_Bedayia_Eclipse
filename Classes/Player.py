@@ -52,7 +52,7 @@ class Player(MovableObject):
         #self.weapon = ForceGloves(self)
         #self.weapon = Weapon(self, 10, 5, (255, 0, 0), 10)
         #self.weapon = PelletLauncher(self)
-        self.weapon = Axe(10, -10, 50, 50, self)
+        self.weapon = Axe(-10, 0, 50, 50, self)
         self.boots = Jetboots(self)
 
     def control(self, key, value):
@@ -134,9 +134,11 @@ class Player(MovableObject):
     
     def draw(self, screen):
         self.health_bar.draw(screen)
-        image = self.image
+        image = pygame.transform.scale(self.image, (self.width, self.height))
         if self.weapon is not None:
-            image = self.holding_image
+            image = pygame.transform.scale(self.holding_image, (self.width, self.height))
+        
+        self.rect = image.get_rect(center=self.rect.center)
         
         # Draw direction indicator
         #center = self.rect.center

@@ -1,25 +1,6 @@
 {
-    "weapons": [
-      {
-        "id": "axe",
-        "name": "Battle Axe",
-        "damage": 25,
-        "speed": 0.8,
-        "range": 2,
-        "description": "A heavy axe that deals significant damage but swings slowly",
-        "sprite": "./Resources/axe.png",
-        "selected": true
-      }
-    ],
-    "accessories": [
-      {
-        "id": "jetboots",
-        "name": "Jetboots",
-        "effect": "double_jump",
-        "boost": 1.5,
-        "description": "Allows the player to perform a double jump",
-        "sprite": "./Resources/jetboots.png",
-        "selected": true
-      }
-    ]
-  }
+  "items": [
+    "jetboots",
+    "axe"
+  ]
+}
