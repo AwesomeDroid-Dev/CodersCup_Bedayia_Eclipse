@@ -49,12 +49,13 @@ def init_wave_1():
     pygame.time.wait(1000)
     
     ground = Object(0, 550, 1200, 50, (255, 255, 255), invisible=True)
-    wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
-    wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
+    wall1 = Object(0, 0, 1, 1200, (255, 255, 255), invisible=True)
+    wall2 = Object(1199, 0, 1, 1200, (255, 255, 255), invisible=True)
+    cieling = Object(-300, 0, 1200, 10, (255, 255, 255), invisible=True)
     player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
     player.weapon = Axe(-10, -10, 50, 50, player)
     player2 = AxeWarrior(100, 100, 20*3, 25*3, player)
-    return [ground, wall1, wall2, player, player2]
+    return [ground, wall1, wall2, player, player2, cieling]
 
 def init_wave_2():
     font = pygame.font.Font(None, 36)
@@ -67,13 +68,14 @@ def init_wave_2():
     pygame.time.wait(1000)
     
     ground = Object(0, 550, 1200, 50, (255, 255, 255), invisible=True)
-    wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
-    wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
+    wall1 = Object(0, 0, 1, 1200, (255, 255, 255), invisible=True)
+    wall2 = Object(1199, 0, 1, 1200, (255, 255, 255), invisible=True)
+    cieling = Object(-300, 0, 1200, 10, (255, 255, 255), invisible=True)
     player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
     player.weapon = Axe(-10, -10, 50, 50, player)
     player2 = BombFighter(100, 100, 12*3, 21*3, player)
     player2.weapon = PelletLauncher(player2)
-    return [ground, wall1, wall2, player, player2]
+    return [ground, wall1, wall2, player, player2, cieling]
 
 def init_wave_3():
     font = pygame.font.Font(None, 36)
@@ -89,11 +91,12 @@ def init_wave_3():
     pygame.time.wait(1000)
     
     ground = Object(0, 550, 1200, 50, (255, 255, 255), invisible=True)
-    wall1 = Object(0, 0, 1, 600, (255, 255, 255), invisible=True)
-    wall2 = Object(1199, 0, 1, 600, (255, 255, 255), invisible=True)
+    wall1 = Object(0, 0, 1, 1200, (255, 255, 255), invisible=True)
+    wall2 = Object(1199, 0, 1, 1200, (255, 255, 255), invisible=True)
+    cieling = Object(-300, 0, 1200, 10, (255, 255, 255), invisible=True)
     player = Player(600, 100, 20*3, 21*3, "./Resources/player_spritesheet.png", speed=10)
     player2 = JetbootsBoss(100, 100, player)
-    return [ground, wall1, wall2, player, player2]
+    return [ground, wall1, wall2, player, player2, cieling]
 
 def main():
     pygame.init()
@@ -184,12 +187,13 @@ def main():
                 game_over = True
         
         if next_round:
-            timeSince = pygame.time.get_ticks() - timer
-            font = pygame.font.Font("./Resources/PressStart2P-Regular.ttf", 50)
-            text = font.render(f"Next Round in {3 - int(timeSince / 1000)} seconds", True, (255, 255, 255))
-            round_scores[current_round - 2] = player.health
-            screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, SCREEN_HEIGHT // 2 - text.get_height() // 2))
-            if timeSince / 1000 >= 3:
+            if current_round != 3:
+                timeSince = pygame.time.get_ticks() - timer
+                font = pygame.font.Font("./Resources/PressStart2P-Regular.ttf", 50)
+                text = font.render(f"Next Round in {3 - int(timeSince / 1000)} seconds", True, (255, 255, 255))
+                round_scores[current_round - 2] = player.health
+                screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, SCREEN_HEIGHT // 2 - text.get_height() // 2))
+            if timeSince / 1000 >= 3 or current_round != 3:
                 next_round = False
                 enemy_defeated = False
                 dropped_item = None
