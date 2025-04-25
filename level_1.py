@@ -187,13 +187,12 @@ def main():
                 game_over = True
         
         if next_round:
-            if current_round != 3:
-                timeSince = pygame.time.get_ticks() - timer
-                font = pygame.font.Font("./Resources/PressStart2P-Regular.ttf", 50)
-                text = font.render(f"Next Round in {3 - int(timeSince / 1000)} seconds", True, (255, 255, 255))
-                round_scores[current_round - 2] = player.health
-                screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, SCREEN_HEIGHT // 2 - text.get_height() // 2))
-            if timeSince / 1000 >= 3 or current_round != 3:
+            timeSince = pygame.time.get_ticks() - timer
+            font = pygame.font.Font("./Resources/PressStart2P-Regular.ttf", 50)
+            text = font.render(f"Next Round in {3 - int(timeSince / 1000)} seconds", True, (255, 255, 255))
+            round_scores[current_round - 2] = player.health
+            screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, SCREEN_HEIGHT // 2 - text.get_height() // 2))
+            if timeSince / 1000 >= 3:
                 next_round = False
                 enemy_defeated = False
                 dropped_item = None
